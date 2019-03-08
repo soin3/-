@@ -28,7 +28,7 @@ def register(model_class,admin_class=None):
     admin_class.model = model_class  #绑定model对象和admin类，相当于model = models.Customer
     enabled_admins[model_class._meta.app_label][model_class._meta.model_name]=admin_class
 
-
+#注册
 register(models.Customer,CustomerAdmin)
 register(models.CustomerFollowUp,CustomerFollowUpAdmin)
 
