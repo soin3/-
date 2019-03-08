@@ -1,0 +1,30 @@
+{% extends 'king_admin/table_index.html' %}
+{% load tags %}
+
+
+{% block container %}
+    <form class="form-horizontal" method="post">
+        {% csrf_token %}
+        <span style="color: red">{{ form_obj.errors }}</span>
+        {% for field in form_obj %}
+            <div class="form-group">
+                <label  class="col-sm-2 control-label" style="font-weight: normal">
+                    {% if field.field.required %}
+                        <b>{{ field.label }}</b>
+                    {% else %}
+                        {{ field.label }}
+                    {% endif %}
+                </label>
+                <div class="col-sm-5">
+                    {{ field }}
+                </div>
+            </div>
+        {% endfor %}
+        <div class="form-group">
+            <div class="col-sm-6">
+                <button type="submit" class="btn btn-success pull-right">保存</button>
+            </div>
+        </div>
+    </form>
+
+{% endblock %}
