@@ -56,7 +56,12 @@
             </div>
         {% endfor %}
         <div class="form-group">
-            <div class="col-sm-6">
+            <div class="col-sm-2">
+                    <a class="btn btn-danger pull-right " href="{% url 'obj_delete' app_name table_name form_obj.instance.id %}">
+                        删除
+                    </a>
+            </div>
+            <div class="col-sm-8">
                 <button type="submit" class="btn btn-success pull-right">保存</button>
             </div>
         </div>
