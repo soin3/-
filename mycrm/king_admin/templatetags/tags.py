@@ -132,3 +132,30 @@ def build_header_column(column,orderby_key,filter_conditions):
 def get_model_name(admin_class):
     return  admin_class.model._meta.verbose_name
 
+@register.simple_tag
+def get_m2m_list(admin_class,field,form_obj):
+    #返回m2m备选数据
+    #表结构对象的某个字段
+    field_obj = getattr(admin_class.model,field.name)
+    all_obj_list = field_obj.rel.model.objects.all()
+    #单条数据的对象中的某个字段
+    if form_obj.instance.id:
+        obj_instance_field = getattr(form_obj.instance,field.name)
+        selected_obj_list = obj_instance_field.all()
+    else:
+        #创建新的m2m一条记录
+        return all_obj_list
+    standby_obj_list = []
+    for obj in all_obj_list:
+        if obj not in selected_obj_list:
+            standby_obj_list.append(obj)
+    return standby_obj_list
+
+@register.simple_tag
+def selected_m2m_list(form_obj,field):
+    #返回m2m已选数据
+    if form_obj.instance.id:
+        field_obj = getattr(form_obj.instance,field.name)
+        return field_obj.all()
+
+

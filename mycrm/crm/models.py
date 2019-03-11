@@ -24,6 +24,7 @@ class Customer(models.Model):
     consult_course = models.ForeignKey("Course",verbose_name="咨询课程",on_delete=models.CASCADE)
     content = models.TextField(verbose_name="咨询详情")
     #课程顾问很得要噢，每个招生老师录入自己的客户
+    tags = models.ManyToManyField("Tag",blank=True,verbose_name="标签",)
     consultant = models.ForeignKey("UserProfile",verbose_name="课程顾问",on_delete=models.CASCADE)
     date = models.DateTimeField(verbose_name="咨询日期",auto_now_add=True)
 
@@ -181,7 +182,7 @@ class UserProfile(models.Model):
     '''账号表，这里我们用django自带的认证系统，并对其进行自定制'''
     user = models.OneToOneField(User,on_delete=models.CASCADE,)
     name = models.CharField(max_length=32,verbose_name="用户姓名")
-    roles = models.ManyToManyField("Role",blank=True, null=True,verbose_name="用户角色")
+    roles = models.ManyToManyField("Role",blank=True,verbose_name="用户角色")
 
     def __str__(self):
         return self.name

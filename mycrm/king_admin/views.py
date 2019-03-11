@@ -50,7 +50,8 @@ def table_objs_change(request,app_name,table_name,obj_id):
             form_obj.save()
     else:
         form_obj = model_form_class(instance=obj)
-    return render(request,"king_admin/table_objs_change.html",{"form_obj":form_obj})
+    return render(request,"king_admin/table_objs_change.html",{"form_obj":form_obj,
+                                                               "admin_class":admin_class})
 
 def table_objs_add(request,app_name,table_name):
     admin_class = king_admin.enabled_admins[app_name][table_name]
@@ -62,7 +63,7 @@ def table_objs_add(request,app_name,table_name):
         return redirect(request.path.replace("/add/","/"))
     else:
         form_obj = model_form_class()
-    return render(request,"king_admin/table_objs_add.html",{"form_obj":form_obj})
+    return render(request,"king_admin/table_objs_add.html",{"form_obj":form_obj,"admin_class":admin_class})
 
 
 
