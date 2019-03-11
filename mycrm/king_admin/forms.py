@@ -9,7 +9,7 @@ class CustomerModelForm(ModelForm):
 
 
 def create_model_form(request,admin_class):
-    #动态生成MODEL_FORM;
+    #动态生成MODEL_FORM;;;;;;;;
     def __new__(cls, *args, **kwargs):
         for field_name,field_obj in cls.base_fields.items():
             field_obj.widget.attrs['class'] = 'form-control'
