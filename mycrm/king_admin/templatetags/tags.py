@@ -158,4 +158,32 @@ def selected_m2m_list(form_obj,field):
         field_obj = getattr(form_obj.instance,field.name)
         return field_obj.all()
 
+@register.simple_tag
+def display_obj_related(obj):
+    #把对象及所有相关联的数据取出
+    objs = [obj,]
+    if objs:
+        model_class = objs[0]._meta.model
+        mode_name = objs[0]._meta.model_name
+        return mark_safe(recursive_related_objs_lookup(objs,mode_name))
 
+def recursive_related_objs_lookup(objs,mode_name):
+    mode_name = objs[0]._meta.model_name
+    ul_ele ="<ul>"
+    for obj in objs:
+        li_ele = '''<li>%s: %s</li>'''%(obj._meta.verbose_name,obj.__str__().strip("<>"))
+        ul_ele +=li_ele
+        for related_obj in obj._meta.related_objects:
+            if 'ManyToOneRel' not in related_obj.__repr__():
+                continue
+            if hasattr(obj,related_obj.get_accessor_name()):
+                accessor_obj = getattr(obj,related_obj.get_accessor_name())
+                if hasattr(accessor_obj,'select_related'):
+                    target_objs = accessor_obj.select_related()
+                else:
+                    target_objs = accessor_obj
+                if len(target_objs) >0:
+                    nodes = recursive_related_objs_lookup(target_objs,mode_name)
+                    ul_ele+=nodes
+    ul_ele +="</ul>"
+    return ul_ele
