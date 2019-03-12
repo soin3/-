@@ -1,5 +1,13 @@
 {% extends 'king_admin/table_index.html' %}
 {% load tags %}
 {% block container %}
+
     {% display_obj_related obj %}
+
+<form method="post">
+    {% csrf_token %}
+    <input type="submit" class="btn btn-danger" value="删除">
+    <a href="{% url 'table_objs' app_name table_name %}" class="btn btn-info">取消</a>
+</form>
+
 {% endblock %}

@@ -164,26 +164,43 @@ def display_obj_related(obj):
     objs = [obj,]
     if objs:
         model_class = objs[0]._meta.model
-        mode_name = objs[0]._meta.model_name
-        return mark_safe(recursive_related_objs_lookup(objs,mode_name))
+        return mark_safe(recursive_related_objs_lookup(objs))
 
-def recursive_related_objs_lookup(objs,mode_name):
-    mode_name = objs[0]._meta.model_name
+def recursive_related_objs_lookup(objs):
+    #拼标签
     ul_ele ="<ul>"
     for obj in objs:
         li_ele = '''<li>%s: %s</li>'''%(obj._meta.verbose_name,obj.__str__().strip("<>"))
         ul_ele +=li_ele
+        for m2m_field in obj._meta.local_many_to_many:
+            sub_ul_ele = '<ul>'
+            m2m_field_obj = getattr(obj,m2m_field.name)
+            for o in m2m_field_obj.select_related():
+                li_ele = '''<li> %s: %s</li>'''%(m2m_field.verbose_name,o.__str__().strip("<>"))
+                sub_ul_ele+=li_ele
+            sub_ul_ele+="</ul>"
+            ul_ele +=sub_ul_ele
+
         for related_obj in obj._meta.related_objects:
-            if 'ManyToOneRel' not in related_obj.__repr__():
-                continue
-            if hasattr(obj,related_obj.get_accessor_name()):
+            if 'ManyToManyRel' in related_obj.__repr__():
+                if hasattr(obj,related_obj.get_accessor_name()):
+                    accessor_obj = getattr(obj,related_obj.get_accessor_name())
+                    if hasattr(accessor_obj,'select_related'):
+                        target_objs = accessor_obj.select_related()
+                        sub_ul_ele = '<ul>'
+                        for o in target_objs:
+                            li_ele = '''<li> %s: %s</li>'''%(o._meta.verbose_name,o.__str__().strip("<>"))
+                            sub_ul_ele+=li_ele
+                        sub_ul_ele+="</ul>"
+                        ul_ele +=sub_ul_ele
+            elif hasattr(obj,related_obj.get_accessor_name()):
                 accessor_obj = getattr(obj,related_obj.get_accessor_name())
                 if hasattr(accessor_obj,'select_related'):
                     target_objs = accessor_obj.select_related()
                 else:
                     target_objs = accessor_obj
                 if len(target_objs) >0:
-                    nodes = recursive_related_objs_lookup(target_objs,mode_name)
+                    nodes = recursive_related_objs_lookup(target_objs)
                     ul_ele+=nodes
     ul_ele +="</ul>"
     return ul_ele

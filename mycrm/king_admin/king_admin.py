@@ -21,6 +21,9 @@ class CustomerAdmin(BaseAdmin):
 class CustomerFollowUpAdmin(BaseAdmin):
     list_display = ['customer','consultant','date']
 
+class UserProfileAdmin(BaseAdmin):
+    list_display = ['user','name']
+
 #注册admin方法
 def register(model_class,admin_class=None):
     # 仿admin注册功能，如果传入的model_class不在enabled_admins字典里，就获取model_class的app名字(model_class._meta.app_label)
@@ -33,4 +36,5 @@ def register(model_class,admin_class=None):
 #注册
 register(models.Customer,CustomerAdmin)
 register(models.CustomerFollowUp,CustomerFollowUpAdmin)
+register(models.UserProfile,UserProfileAdmin)
 
