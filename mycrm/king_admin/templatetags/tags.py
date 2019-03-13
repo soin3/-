@@ -107,11 +107,13 @@ def render_filter_ele(filter_field,admin_class,filter_conditions):#过滤筛选�
     return mark_safe(select_ele)
 
 @register.simple_tag
-def build_header_column(column,orderby_key,filter_conditions):
+def build_header_column(column,orderby_key,filter_conditions,admin_class):
     filter=''
+    verbose_name = admin_class.model._meta.get_field(column).verbose_name
+
     for k,v in filter_conditions.items():
         filter += '&%s=%s'%(k,v)
-    ele = '''<th><a href="?{filter}&o={orderby_key}">{column}</a>{sort_icon}</th>'''
+    ele = '''<th><a href="?{filter}&o={orderby_key}">{verbose_name}</a>{sort_icon}</th>'''
     if orderby_key:
         if orderby_key.startswith("-"):
             sort_icon = '''<span class="glyphicon glyphicon-chevron-up"></span>'''
@@ -125,7 +127,7 @@ def build_header_column(column,orderby_key,filter_conditions):
     else:#没有排序
         orderby_key = column
         sort_icon=''
-    ele= ele.format(orderby_key=orderby_key,column=column,sort_icon=sort_icon,filter=filter)
+    ele= ele.format(orderby_key=orderby_key,verbose_name=verbose_name,sort_icon=sort_icon,filter=filter)
     return mark_safe(ele)
 
 @register.simple_tag
@@ -204,3 +206,9 @@ def recursive_related_objs_lookup(objs):
                     ul_ele+=nodes
     ul_ele +="</ul>"
     return ul_ele
+
+@register.simple_tag
+def render_verbose_ele(filter_field,admin_class):
+    verbose_name = admin_class.model._meta.get_field(filter_field).verbose_name
+    span_ele ="<span>"+ verbose_name +"</span>"
+    return mark_safe(span_ele)

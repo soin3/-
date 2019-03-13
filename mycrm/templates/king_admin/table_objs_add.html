@@ -1,1 +1,80 @@
-{% extends "king_admin/table_objs_change.html" %}
+{% extends 'king_admin/table_index.html' %}
+{% load tags %}
+{% block extra-css-resources %}
+    <style type="text/css">
+        .filter_select_box {
+            height: 300px !important;
+            width: 100%;
+            border-radius: 1px;
+        }
+    </style>
+{% endblock %}
+
+{% block container %}
+    <form class="form-horizontal" method="post" onsubmit="return SelectAll()">
+        {% csrf_token %}
+        <span style="color: red">{{ form_obj.errors }}</span>
+        {% for field in form_obj %}
+            <div class="form-group">
+                <label class="col-sm-2 control-label" style="font-weight: normal">
+                    {% if field.field.required %}
+                        <b>{{ field.label }}</b>
+                    {% else %}
+                        {{ field.label }}
+                    {% endif %}
+                </label>
+
+                <div class="col-sm-5">
+                    {% if field.name in admin_class.filter_horizontal %}
+                        <div class="col-md-5">
+                            {% get_m2m_list admin_class field form_obj as m2m_obj_list %}
+                            <select id="id_{{ field.name }}_from" multiple class="filter_select_box">
+                                {% for obj in m2m_obj_list %}
+                                    <option value = "{{ obj.id }}"ondblclick="MoveTo(this,'id_{{ field.name }}_to','id_{{ field.name }}_from')">
+                                        {{ obj }}
+                                    </option>
+                                {% endfor %}
+                            </select>
+                        </div>
+                        <div class="col-md-1">
+                            <span class="glyphicon glyphicon-resize-horizontal" style="top: 140px;font-size:22px" aria-hidden="true"></span>
+                        </div>
+                        <div class="col-md-5">
+                            {% selected_m2m_list form_obj field as selected_obj_list %}
+                            <select name ="{{ field.name }}" tag="chose" id="id_{{ field.name }}_to" multiple class="filter_select_box">
+                                {% for obj in selected_obj_list %}
+                                    <option value="{{ obj.id }}"ondblclick="MoveTo(this,'id_{{ field.name }}_from','id_{{ field.name }}_to')">
+                                        {{ obj }}
+                                    </option>
+                                {% endfor %}
+                            </select>
+                        </div>
+                    {% else %}
+                        {{ field }}
+                    {% endif %}
+                </div>
+            </div>
+        {% endfor %}
+        <div class="form-group">
+
+            <div class="col-sm-8">
+                <button type="submit" class="btn btn-success pull-right">保存</button>
+            </div>
+        </div>
+    </form>
+<script>
+    function MoveTo(ele,target_id,new_target_id){
+        {#    左移右移    #}
+        var opt_ele = "<option value='" + $(ele).val() + "' ondblclick=MoveTo(this,'"+ new_target_id +"','" + target_id +"')>" + $(ele).text();
+        $("#" + target_id).append(opt_ele);
+        $(ele).remove();
+    }
+
+    function SelectAll(){
+        $("select[tag='chose'] option").each(function(){
+            $(this).prop("selected",true);
+        })
+        return true
+    }
+</script>
+{% endblock %}

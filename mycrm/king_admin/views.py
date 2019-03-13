@@ -12,7 +12,7 @@ def index(request):
 
 def display_table_objs(request,app_name,table_name):
     admin_class = king_admin.enabled_admins[app_name][table_name]
-    #！！！非常重要的三步
+        #！！！非常重要的三步
     object_list,filter_conditions = table_filter(request,admin_class)#过滤
     object_list = table_search(request,admin_class,object_list)#搜索
     object_list,orderby_key = table_sort(request,admin_class,object_list)#排序
@@ -28,6 +28,7 @@ def display_table_objs(request,app_name,table_name):
     except EmptyPage:
         # If page is out of range (e.g. 9999), deliver last page of results.
         query_sets = paginator.page(paginator.num_pages)
+
     return render(request,"king_admin/table_objs.html",
                   {"admin_class":admin_class,
                    "query_sets":query_sets,
@@ -37,7 +38,6 @@ def display_table_objs(request,app_name,table_name):
                    "search_text":request.GET.get("search",''),
                   },
                   )
-
 
 def table_objs_change(request,app_name,table_name,obj_id):
     admin_class = king_admin.enabled_admins[app_name][table_name]
@@ -65,7 +65,7 @@ def table_objs_add(request,app_name,table_name):
         return redirect(request.path.replace("/add/","/"))
     else:
         form_obj = model_form_class()
-    return render(request,"king_admin/table_objs_add.html",{"form_obj":form_obj,"admin_class":admin_class})
+    return render(request,"king_admin/table_objs_add.html",{"form_obj":form_obj,"admin_class":admin_class,})
 
 def table_objs_delete(request,app_name,table_name,obj_id):
     admin_class = king_admin.enabled_admins[app_name][table_name]

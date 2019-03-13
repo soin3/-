@@ -6,10 +6,10 @@ class Customer(models.Model):
     '''客户信息表：
     主要给销售人员用，存储所有客户信息，里面要记录客户来源＼姓名＼qq＼客户来源＼咨询的内容等,
     客户只要没报名，你没理由要求人家必须告诉你真实姓名及其它更多私人信息呀'''
-    name = models.CharField(max_length=32,blank=True,null=True)
+    name = models.CharField(verbose_name="姓名",max_length=32,blank=True,null=True)
     #客户在咨询时，多是通过qq,所以这里就把qq号做为唯一标记客户的值，不能重复
-    qq = models.CharField(max_length=64,unique=True,help_text=u'QQ号必须唯一')
-    qq_name = models.CharField(max_length=64,blank=True,null=True)
+    qq = models.CharField(verbose_name="qq号",max_length=64,unique=True,help_text=u'QQ号必须唯一')
+    qq_name = models.CharField(verbose_name="qq名称",max_length=64,blank=True,null=True)
     source_choices = ((0,'转介绍'),
                       (1,'qq'),
                       (2,'微信'),
@@ -18,7 +18,7 @@ class Customer(models.Model):
                       (5,'其他'),
                     )
     #这个客户来源渠道是为了以后统计各渠道的客户量＼成单量，先分类出来
-    source = models.SmallIntegerField(choices=source_choices)
+    source = models.SmallIntegerField(verbose_name="来源",choices=source_choices)
     referral_from = models.CharField(verbose_name="转介绍人qq",max_length=64,blank=True,null=True)
     #已开设的课程单独搞了张表，客户想咨询哪个课程，直接在这里关联就可以
     consult_course = models.ForeignKey("Course",verbose_name="咨询课程",on_delete=models.CASCADE)

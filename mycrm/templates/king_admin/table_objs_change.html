@@ -10,7 +10,17 @@
     </style>
 {% endblock %}
 
+
+
+
 {% block container %}
+    <div class="panel panel-info">
+    <div class="panel-heading">
+            <h3 class="panel-title">详细信息
+            </h3>
+    </div>
+    <hr>
+
     <form class="form-horizontal" method="post" onsubmit="return SelectAll()">
         {% csrf_token %}
         <span style="color: red">{{ form_obj.errors }}</span>
@@ -66,6 +76,7 @@
             </div>
         </div>
     </form>
+    </div>
 <script>
     function MoveTo(ele,target_id,new_target_id){
         {#    左移右移    #}
