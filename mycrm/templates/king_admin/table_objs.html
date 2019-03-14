@@ -18,7 +18,7 @@
                 <form>
                     <div class="row">
                         <div class="col-lg-4">
-                            <input type="search" name="search" class="form-control"
+                            <input type="search" name="search" class="form-control" style="margin-left: 15px"
                                    placeholder="可以通过{% for i in admin_class.search_fields %} {{ i }} {% endfor %}字段搜索"
                                    style="margin-left: 15px"
                                    value={{ search_text }}>
@@ -28,39 +28,59 @@
                         </div>
                     </div>
                     <hr>
-
                     {#                过滤#}
                     {% for filter_field in admin_class.list_filters %}
                         <div class="col-lg-2">
-{#                            <span>{{ filter_field }}</span>#}
-                            {% render_verbose_ele filter_field admin_class%}
+                            {#                            <span>{{ filter_field }}</span>#}
+                            {% render_verbose_ele filter_field admin_class %}
                             {% render_filter_ele filter_field admin_class filter_conditions %}
                         </div>
                     {% endfor %}
-                    <button type="submit" class="btn btn-primary" style="margin-top:20px">GO</button>
+                    <button type="submit" class="btn btn-primary" style="margin-top:20px">过滤</button>
+                    <hr>
                 </form>
             </div>
-            <hr>
-
-
-            <table class="table table-hover">
-                <thead>
-                <tr>
-{#                排序功能#}
-                    {% for column in admin_class.list_display %}
-                        {% build_header_column column orderby_key filter_conditions admin_class%}
-                    {% endfor %}
-                </tr>
-                </thead>
-                <tbody>
-                {% for obj in query_sets %}
-                    <tr>
-                        {% build_table_row request obj admin_class %}
-                    </tr>
-                {% endfor %}
-                </tbody>
-            </table>
+            <div class="row">
+                <form onsubmit="return ActionSubmit(this)" method="post">
+                {% csrf_token %}
+                    <div class="col-lg-2">
+                        <select id="action_list" name="action"  class="form-control ">
+                            <option value="">---</option>
+                            {% for action in admin_class.actions %}
+                                <option value="{{ action }}">{% get_action_name admin_class action%}</option>
+                            {% endfor %}
+                        </select>
+                    </div>
+                    <div class="col-lg-1">
+                        <button type="SUBMIT" class="btn">一键执行</button>
+                    </div>
+                </form>
+            </div>
         </div>
+
+        <table class="table table-hover">
+            <thead>
+            <tr>
+                {#                排序功能#}
+                <th style="width: 35px">
+                    {#                        <input type="checkbox" onclick="CheckAllToggle(this)">#}
+                    <input type="checkbox" onclick="CheckAllToggle(this)">
+                </th>
+                {% for column in admin_class.list_display %}
+                    {% build_header_column column orderby_key filter_conditions admin_class %}
+                {% endfor %}
+            </tr>
+            </thead>
+            <tbody>
+            {% for obj in query_sets %}
+                <tr>
+                    <td><input tag="obj_checkbox" type="checkbox" value="{{ obj.id }}"></td>
+                    {% build_table_row request obj admin_class %}
+                </tr>
+            {% endfor %}
+            </tbody>
+        </table>
+    </div>
     </div>
 
     {#    分页功能#}
@@ -80,4 +100,36 @@
             <span style="position: relative;float: left;padding: 12px 12px;margin-left: 12px;line-height: 1.42857143;color: #000000;text-decoration: none;background-color: #fff;">共{{ query_sets.paginator.num_pages }}页，{{ query_sets.paginator.count }}条记录</span>
         </ul>
     </nav>
+
+
+    <script>
+        function CheckAllToggle(ele) {
+            if ($(ele).prop("checked")) {
+                $("input[tag='obj_checkbox']").prop("checked", true);
+            }
+            else {
+                $("input[tag='obj_checkbox']").prop("checked", false);
+            }
+        }
+
+        function ActionSubmit(form_ele) {
+            var selected_ids = [];
+            $("input[tag='obj_checkbox']:checked").each(function () {
+                selected_ids.push($(this).val());
+            })
+            var selected_action = $('#action_list').val();
+            if (selected_ids.length == 0) {
+                alert("请选择要操作的数据")
+                return
+            }
+            if (!selected_action) {
+                alert("请选择一键执行的条件")
+            }
+            //开始提交操作
+            var selected_ids_ele = "<input name='selected_ids' type ='hidden' value='" + selected_ids.toString() + "'>"
+            $(form_ele).append(selected_ids_ele);
+
+            return true
+        }
+    </script>
 {% endblock %}

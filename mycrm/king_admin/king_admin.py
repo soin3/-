@@ -1,5 +1,6 @@
 __author__ = 'solin'
 from crm import models
+from django.shortcuts import render,redirect
 
 enabled_admins = {}
 class BaseAdmin(object):
@@ -10,6 +11,20 @@ class BaseAdmin(object):
     search_fields = []
     ordering = None
     filter_horizontal = []
+    actions = ["delete_selected_ojs",]
+    def delete_selected_ojs(self,request,querysets):
+        app_name = self.model._meta.app_label
+        table_name = self.model._meta.model_name
+        if request.POST.get("delete_confirm") == "yes":
+            querysets.delete()
+            return redirect("/king_admin/%s/%s/"%(app_name,table_name))
+        selected_ids = ','.join([str(i.id) for i in querysets])
+        return render(request,"king_admin/table_objs_delete.html",{"objs":querysets,"admin_class":self,
+                                                               "app_name":app_name,"table_name":table_name,
+                                                               "selected_ids":selected_ids,"action":request._admin_action})
+    delete_selected_ojs.display_name = "删除记录"
+
+
 
 class CustomerAdmin(BaseAdmin):
     list_display = ['id','qq','name','source','consultant','consult_course','date','content']
@@ -17,6 +32,7 @@ class CustomerAdmin(BaseAdmin):
     list_per_page = 5
     search_fields = ['qq','name','consultant__name']
     filter_horizontal = ('tags',)#复选框设置
+
 
 class CustomerFollowUpAdmin(BaseAdmin):
     list_display = ['customer','consultant','date']

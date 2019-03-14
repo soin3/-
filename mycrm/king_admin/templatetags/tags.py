@@ -161,9 +161,8 @@ def selected_m2m_list(form_obj,field):
         return field_obj.all()
 
 @register.simple_tag
-def display_obj_related(obj):
+def display_obj_related(objs):
     #把对象及所有相关联的数据取出
-    objs = [obj,]
     if objs:
         model_class = objs[0]._meta.model
         return mark_safe(recursive_related_objs_lookup(objs))
@@ -212,3 +211,8 @@ def render_verbose_ele(filter_field,admin_class):
     verbose_name = admin_class.model._meta.get_field(filter_field).verbose_name
     span_ele ="<span>"+ verbose_name +"</span>"
     return mark_safe(span_ele)
+
+@register.simple_tag
+def get_action_name(admin_class,action):
+    action_func = getattr(admin_class,action)
+    return action_func.display_name if hasattr(action_func,'display_name')else action

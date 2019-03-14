@@ -12,6 +12,18 @@ def index(request):
 
 def display_table_objs(request,app_name,table_name):
     admin_class = king_admin.enabled_admins[app_name][table_name]
+    if request.method == "POST":
+        select_ids = request.POST.get("selected_ids")
+        action = request.POST.get("action")
+        if select_ids:
+            select_objs = admin_class.model.objects.filter(id__in = select_ids.split(','))
+        else:
+            raise KeyError("无此对象")
+        if hasattr(admin_class,action):
+            action_func = getattr(admin_class,action)
+            request._admin_action = action
+            return action_func(admin_class,request,select_objs)
+
         #！！！非常重要的三步
     object_list,filter_conditions = table_filter(request,admin_class)#过滤
     object_list = table_search(request,admin_class,object_list)#搜索
