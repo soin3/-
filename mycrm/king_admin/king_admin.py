@@ -42,7 +42,8 @@ class CustomerAdmin(BaseAdmin):
     readonly_fields = ["qq","consultant"]
 
     def default_form_validation(self):
-        content = self.cleaned_data.get("content")
+
+        content = self.cleaned_data.get("content")#content长度验证
         if len(content) < 5:
             return self.ValidationError(
                     ('%(field)s不能少于5个字'),
