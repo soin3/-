@@ -43,7 +43,7 @@ class CustomerAdmin(BaseAdmin):
 
     def default_form_validation(self):
 
-        content = self.cleaned_data.get("content")#content长度验证
+        content = self.cleaned_data.get("content")#content长度验证。。
         if len(content) < 5:
             return self.ValidationError(
                     ('%(field)s不能少于5个字'),
