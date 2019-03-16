@@ -9,6 +9,7 @@ class BaseAdmin(object):
     list_filters = []
     list_per_page = 20#默认分页页数
     search_fields = []
+    readonly_fields = []
     ordering = None
     filter_horizontal = []
     actions = ["delete_selected_ojs",]
@@ -22,6 +23,12 @@ class BaseAdmin(object):
         return render(request,"king_admin/table_objs_delete.html",{"objs":querysets,"admin_class":self,
                                                                "app_name":app_name,"table_name":table_name,
                                                                "selected_ids":selected_ids,"action":request._admin_action})
+
+    def default_form_validation(self):
+        #自定义form
+        pass
+
+
     delete_selected_ojs.display_name = "删除记录"
 
 
@@ -32,6 +39,15 @@ class CustomerAdmin(BaseAdmin):
     list_per_page = 5
     search_fields = ['qq','name','consultant__name']
     filter_horizontal = ('tags',)#复选框设置
+    readonly_fields = ["qq","consultant"]
+
+    def default_form_validation(self):
+        content = self.cleaned_data.get("content")
+        if len(content) < 5:
+            return self.ValidationError(
+                    ('%(field)s不能少于5个字'),
+                    code='invalid',
+                    params= {'field':"咨询详情",})
 
 
 class CustomerFollowUpAdmin(BaseAdmin):

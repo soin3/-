@@ -89,6 +89,9 @@
         $("select[tag='chose'] option").each(function(){
             $(this).prop("selected",true);
         })
+
+{#        提交时取消掉disabled，不然导致不可写字段POST不过去#}
+        $("form").find("[disabled]").removeAttr("disabled");
         return true
     }
 </script>
