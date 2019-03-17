@@ -3,6 +3,7 @@
 {% block container %}
 <div class="alert alert-warning" role="alert">确认删除吗？</div>
     {% display_obj_related objs %}
+    <span style="color: red">{{ error }}</span>
 
 <form method="post">
     {% csrf_token %}

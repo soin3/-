@@ -12,13 +12,13 @@ def index(request):
 
 def display_table_objs(request,app_name,table_name):
     admin_class = king_admin.enabled_admins[app_name][table_name]
-    if request.method == "POST":
+    if request.method == "POST":#action
         select_ids = request.POST.get("selected_ids")
         action = request.POST.get("action")
         if select_ids:
             select_objs = admin_class.model.objects.filter(id__in = select_ids.split(','))
         else:
-            raise KeyError("无此对象")
+            return redirect(("/king_admin/%s/%s/"%(app_name,table_name)))
         if hasattr(admin_class,action):
             action_func = getattr(admin_class,action)
             request._admin_action = action
@@ -83,11 +83,19 @@ def table_objs_add(request,app_name,table_name):
 def table_objs_delete(request,app_name,table_name,obj_id):
     admin_class = king_admin.enabled_admins[app_name][table_name]
     obj = admin_class.model.objects.get(id=obj_id)
+    error = ''
+    if admin_class.readonly_table:
+        error = '此表只读不可更改'
+    else:
+        error = ''
     if request.method =="POST":
-        obj.delete()
-        return redirect("/king_admin/%s/%s/"%(app_name,table_name))
+        if not admin_class.readonly_table:
+            obj.delete()
+            return redirect("/king_admin/%s/%s/"%(app_name,table_name))
+
+
     return render(request,"king_admin/table_objs_delete.html",{"obj":obj,"admin_class":admin_class,
-                                                               "app_name":app_name,"table_name":table_name})
+                                                               "app_name":app_name,"table_name":table_name,"error":error})
 
 
 

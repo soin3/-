@@ -8,7 +8,9 @@
     <div class="panel panel-info">
         <div class="panel-heading">
             <h3 class="panel-title">{% get_model_name admin_class %}
+                {% if not admin_class.readonly_table %}
                 <a href="{{ request.path }}add/" class="pull-right">+添加</a>
+                {% endif %}
             </h3>
         </div>
 
@@ -81,9 +83,8 @@
             </tbody>
         </table>
     </div>
-    </div>
 
-    {#    分页功能#}
+        {#    分页功能#}
     <nav aria-label="...">
         <ul class="pagination">
             <li class="">{% now_page_ele 1 query_sets filter_conditions 2 previous_key search_text %}</li>
@@ -100,6 +101,9 @@
             <span style="position: relative;float: left;padding: 12px 12px;margin-left: 12px;line-height: 1.42857143;color: #000000;text-decoration: none;background-color: #fff;">共{{ query_sets.paginator.num_pages }}页，{{ query_sets.paginator.count }}条记录</span>
         </ul>
     </nav>
+    </div>
+
+
 
 
     <script>

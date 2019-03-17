@@ -12,25 +12,29 @@ class BaseAdmin(object):
     readonly_fields = []
     ordering = None
     filter_horizontal = []
+    readonly_table = False
     actions = ["delete_selected_ojs",]
     def delete_selected_ojs(self,request,querysets):
         app_name = self.model._meta.app_label
         table_name = self.model._meta.model_name
+        if self.readonly_table:
+            error = '此表只读不可更改'
+        else:
+            error = ''
         if request.POST.get("delete_confirm") == "yes":
-            querysets.delete()
+            if not self.readonly_table:
+                querysets.delete()
             return redirect("/king_admin/%s/%s/"%(app_name,table_name))
         selected_ids = ','.join([str(i.id) for i in querysets])
         return render(request,"king_admin/table_objs_delete.html",{"objs":querysets,"admin_class":self,
                                                                "app_name":app_name,"table_name":table_name,
-                                                               "selected_ids":selected_ids,"action":request._admin_action})
+                                                               "selected_ids":selected_ids,"action":request._admin_action,
+                                                               "error":error})
 
     def default_form_validation(self):
         #自定义form
         pass
-
-
     delete_selected_ojs.display_name = "删除记录"
-
 
 
 class CustomerAdmin(BaseAdmin):
@@ -40,16 +44,19 @@ class CustomerAdmin(BaseAdmin):
     search_fields = ['qq','name','consultant__name']
     filter_horizontal = ('tags',)#复选框设置
     readonly_fields = ["qq","consultant","tags"]
+    readonly_table =True
 
     def default_form_validation(self):
         #对整个form验证
         content = self.cleaned_data.get("content")#content长度验证。。
         if len(content) < 5:
-            return self.ValidationError(
-                    ('%(field)s不能少于5个字'),
-                    code='invalid',
-                    params= {'field':"咨询详情",})
-    #
+            return self.add_error('content',"不能少于5个字")
+            # return self.ValidationError(
+            #         ('%(field)s不能少于5个字'),
+            #         code='invalid',
+            #         params= {'field':"咨询详情",})
+
+
     # def clean_name(self):
     #     #对单个字段验证
     #     print(self.cleaned_data["name"])

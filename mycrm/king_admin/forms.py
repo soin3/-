@@ -16,6 +16,7 @@ def create_model_form(request,admin_class):
             field_obj.widget.attrs['class'] = 'form-control'
             if not hasattr(admin_class,"is_add_form"):
                 if field_name in admin_class.readonly_fields:
+                    print(field_name)
                     field_obj.widget.attrs['disabled']='disabled'
 
             if hasattr(admin_class,"clean_%s"%field_name):
@@ -27,6 +28,10 @@ def create_model_form(request,admin_class):
     def default_clean(self):
         '''给所有form加一个clean验证,相当于djang的clean验证'''
         error_list = []
+        if admin_class.readonly_table:
+            raise ValidationError(
+                        _('只读表，不可修改'),
+                        code='invalid',)
         if self.instance.id:
             for field in admin_class.readonly_fields:
                 field_val = getattr(self.instance,field)
