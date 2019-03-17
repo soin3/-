@@ -39,16 +39,22 @@ class CustomerAdmin(BaseAdmin):
     list_per_page = 5
     search_fields = ['qq','name','consultant__name']
     filter_horizontal = ('tags',)#复选框设置
-    readonly_fields = ["qq","consultant"]
+    readonly_fields = ["qq","consultant","tags"]
 
     def default_form_validation(self):
-
+        #对整个form验证
         content = self.cleaned_data.get("content")#content长度验证。。
         if len(content) < 5:
             return self.ValidationError(
                     ('%(field)s不能少于5个字'),
                     code='invalid',
                     params= {'field':"咨询详情",})
+    #
+    # def clean_name(self):
+    #     #对单个字段验证
+    #     print(self.cleaned_data["name"])
+    #     if not self.cleaned_data["name"]:
+    #         self.add_error('name',"姓名不可为空")
 
 
 class CustomerFollowUpAdmin(BaseAdmin):

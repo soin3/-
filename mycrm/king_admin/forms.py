@@ -14,20 +14,37 @@ def create_model_form(request,admin_class):
     def __new__(cls, *args, **kwargs):
         for field_name,field_obj in cls.base_fields.items():
             field_obj.widget.attrs['class'] = 'form-control'
-            if field_name in admin_class.readonly_fields:
-                field_obj.widget.attrs['disabled']='disabled'
+            if not hasattr(admin_class,"is_add_form"):
+                if field_name in admin_class.readonly_fields:
+                    field_obj.widget.attrs['disabled']='disabled'
+
+            if hasattr(admin_class,"clean_%s"%field_name):
+                field_clean_func = getattr(admin_class,"clean_%s"%field_name)
+                setattr(cls,"clean_%s"%field_name,field_clean_func)
+
+
         return ModelForm.__new__(cls)
     def default_clean(self):
         '''给所有form加一个clean验证,相当于djang的clean验证'''
         error_list = []
-        for field in admin_class.readonly_fields:
-            field_val = getattr(self.instance,field)
-            field_clean_data = self.cleaned_data.get(field)
-            if field_val != field_clean_data:
-                error_list.append(ValidationError(
-                    _('%(field)只读字段，不可修改'),
-                    code='invalid',
-                    params= {'field':field,}))
+        if self.instance.id:
+            for field in admin_class.readonly_fields:
+                field_val = getattr(self.instance,field)
+                if hasattr(field_val,"select_related"):#m2m
+                    m2m_objs = getattr(field_val,"select_related")().select_related()
+                    m2m_vals = [i[0] for i in m2m_objs.values_list('id')]
+                    set_m2m_vals = set(m2m_vals)
+                    set_m2m_vals_from_frontend = set([i.id for i in self.cleaned_data.get(field)])
+                    if set_m2m_vals != set_m2m_vals_from_frontend:
+                        self.add_error(field,"只读字段，不可修改")
+                    continue
+
+                field_clean_data = self.cleaned_data.get(field)
+                if field_val != field_clean_data:
+                    error_list.append(ValidationError(
+                        _('%(field)s只读字段，不可修改'),
+                        code='invalid',
+                        params= {'field':field,}))
 
         self.ValidationError = ValidationError
         clean_return = admin_class.default_form_validation(self)
