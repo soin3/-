@@ -27,6 +27,10 @@ class Customer(models.Model):
     tags = models.ManyToManyField("Tag",blank=True,verbose_name="标签",)
     consultant = models.ForeignKey("UserProfile",verbose_name="课程顾问",on_delete=models.CASCADE)
     date = models.DateTimeField(verbose_name="咨询日期",auto_now_add=True)
+    status_choices = ((0,"未报名"),
+                      (1,"已报名")
+                      )
+    status = models.IntegerField(verbose_name="报名状态",default=0,choices=status_choices,help_text="选择客户此时的状态")
 
     def __str__(self):
         return "QQ:%s,Name:%s" %(self.qq,self.name)
@@ -208,10 +212,8 @@ class Role(models.Model):
     '''角色信息'''
     name = models.CharField(max_length=32,unique=True)
     menus = models.ManyToManyField("Menu",blank=True)
-
     def __str__(self):
         return self.name
-
     class Meta:
         verbose_name = "Role角色信息表"
         verbose_name_plural ="Role角色信息表"
@@ -220,6 +222,8 @@ class Menu(models.Model):
     '''菜单'''
     name = models.CharField(verbose_name='菜单名称', max_length=32)
     url_name = models.CharField(verbose_name='url名称', max_length=64)
+    url_type_choices = ((0,'alias'),(1,'absolute_url'))
+    url_type = models.SmallIntegerField(choices=url_type_choices,default=0)
     class Meta:
         verbose_name = "Menu菜单表"
         verbose_name_plural ="Menu菜单表"

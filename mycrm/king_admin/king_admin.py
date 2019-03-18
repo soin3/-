@@ -38,7 +38,7 @@ class BaseAdmin(object):
 
 
 class CustomerAdmin(BaseAdmin):
-    list_display = ['id','qq','name','source','consultant','consult_course','date','content']
+    list_display = ['id','qq','name','source','consultant','consult_course','date','content','status']
     list_filters = ['source','consultant','consult_course','date']
     list_per_page = 5
     search_fields = ['qq','name','consultant__name']
