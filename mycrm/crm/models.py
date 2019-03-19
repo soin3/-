@@ -1,12 +1,17 @@
 from django.db import models
 from django.contrib.auth.models import User
+from django.contrib.auth.models import (
+    BaseUserManager, AbstractBaseUser,PermissionsMixin
+)
+from django.utils.translation import gettext_lazy as _
+from django.utils.safestring import mark_safe
 
 # Create your models here.
 class Customer(models.Model):
     '''客户信息表：
     主要给销售人员用，存储所有客户信息，里面要记录客户来源＼姓名＼qq＼客户来源＼咨询的内容等,
     客户只要没报名，你没理由要求人家必须告诉你真实姓名及其它更多私人信息呀'''
-    name = models.CharField(verbose_name="姓名",max_length=32,blank=True,null=True)
+    name = models.CharField(verbose_name="姓名",max_length=32,blank=True,null=True,help_text='用户报名后请改为真实姓名')
     #客户在咨询时，多是通过qq,所以这里就把qq号做为唯一标记客户的值，不能重复
     qq = models.CharField(verbose_name="qq号",max_length=64,unique=True,help_text=u'QQ号必须唯一')
     qq_name = models.CharField(verbose_name="qq名称",max_length=64,blank=True,null=True)
@@ -182,17 +187,86 @@ class StudyRecord(models.Model):
         verbose_name = "StudyRecord学习成绩表"
         verbose_name_plural ="StudyRecord学习成绩表"
 
-class UserProfile(models.Model):
-    '''账号表，这里我们用django自带的认证系统，并对其进行自定制'''
-    user = models.OneToOneField(User,on_delete=models.CASCADE,)
+# class UserProfile(models.Model):
+#     '''账号表，这里我们用django自带的认证系统，并对其进行自定制'''
+#     user = models.OneToOneField(User,on_delete=models.CASCADE,)
+#     name = models.CharField(max_length=32,verbose_name="用户姓名")
+#     roles = models.ManyToManyField("Role",blank=True,verbose_name="用户角色")
+#
+#     def __str__(self):
+#         return self.name
+#     class Meta:
+#         verbose_name = "UserProfile账号表"
+#         verbose_name_plural ="UserProfile账号表"
+class UserProfileManager(BaseUserManager):
+    #创建用户的方法
+    def create_user(self, email, name, password=None):
+        """
+        Creates and saves a User with the given email, date of
+        birth and password.
+        """
+        if not email:
+            raise ValueError('Users must have an email address')
+
+        user = self.model(
+            email=self.normalize_email(email),
+            name=name,
+        )
+        user.is_active = True
+        user.set_password(password)
+        user.save(using=self._db)
+        return user
+
+    def create_superuser(self, email, name, password):
+        """
+        Creates and saves a superuser with the given email, date of
+        birth and password.
+        """
+        user = self.create_user(
+            email,
+            password=password,
+            name=name,
+        )
+        user.is_admin = True
+        user.is_active = True
+        user.save(using=self._db)
+        return user
+class UserProfile(AbstractBaseUser,PermissionsMixin):
+    '''账号表'''
+    email = models.EmailField(
+        verbose_name='email',
+        max_length=255,
+        unique=True,
+        )
+    password = models.CharField(_('password'), max_length=128,help_text=mark_safe('''<a href="password/">修改密码</a>'''))
     name = models.CharField(max_length=32,verbose_name="用户姓名")
-    roles = models.ManyToManyField("Role",blank=True,verbose_name="用户角色")
+    is_active = models.BooleanField(default=True)
+    is_admin = models.BooleanField(default=False)
+
+    objects = UserProfileManager()
+
+    USERNAME_FIELD = 'email'
+    REQUIRED_FIELDS = ['name']
 
     def __str__(self):
-        return self.name
-    class Meta:
-        verbose_name = "UserProfile账号表"
-        verbose_name_plural ="UserProfile账号表"
+        return self.email
+
+    def has_perm(self, perm, obj=None):
+        "Does the user have a specific permission?"
+        # Simplest possible answer: Yes, always
+        return True
+
+    def has_module_perms(self, app_label):
+        "Does the user have permissions to view the app `app_label`?"
+        # Simplest possible answer: Yes, always
+        return True
+
+    @property
+    def is_staff(self):
+        "Is the user a member of staff?"
+        # Simplest possible answer: All admins are staff
+        return self.is_admin
+
 
 class Payment(models.Model):
     '''缴费记录'''
@@ -240,3 +314,6 @@ class Branch(models.Model):
     class Meta:
         verbose_name = "Branch校区表"
         verbose_name_plural ="Branch校区表"
+
+
+

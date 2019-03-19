@@ -83,7 +83,7 @@
                         {{ field.errors.as_text }}
                         </span>
                         {% else %}
-                            {{ field }}
+                            <span style="color: darkgrey">{{ field }}{{ field.help_text }}</span>
                             <span style="color: red">
                         {{ field.errors.as_text }}
                         </span>

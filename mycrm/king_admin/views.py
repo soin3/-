@@ -97,5 +97,24 @@ def table_objs_delete(request,app_name,table_name,obj_id):
     return render(request,"king_admin/table_objs_delete.html",{"obj":obj,"admin_class":admin_class,
                                                                "app_name":app_name,"table_name":table_name,"error":error})
 
+def change_password(request,app_name,table_name,obj_id):
+    admin_class = king_admin.enabled_admins[app_name][table_name]
+    model_form_class = create_model_form(request,admin_class)
+    obj = admin_class.model.objects.get(id=obj_id)
+    errors = {}
+    if request.method =='POST':
+        password1 = request.POST.get("password1")
+        password2 = request.POST.get("password2")
+        if password1 == password2:
+            if len(password1) >5:
+                obj.set_password(password1)#调用AbstractBaseUser的改密码方法
+                obj.save()
+                return redirect(request.path.rstrip("password/"))
+            else:
+                errors['errors1']='密码不得小于六位'
+        else:
+            errors['errors2']='密码不一致'
+    return render(request,'king_admin/change_password.html',{"obj":obj,"admin_class":admin_class,"model_form_class":model_form_class,"errors":errors})
+
 
 

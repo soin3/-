@@ -9,6 +9,7 @@ class CustomerModelForm(ModelForm):
         fields = "__all__"
 
 
+
 def create_model_form(request,admin_class):
     #动态生成MODEL_FORM;
     def __new__(cls, *args, **kwargs):
@@ -22,7 +23,6 @@ def create_model_form(request,admin_class):
             if hasattr(admin_class,"clean_%s"%field_name):
                 field_clean_func = getattr(admin_class,"clean_%s"%field_name)
                 setattr(cls,"clean_%s"%field_name,field_clean_func)
-
 
         return ModelForm.__new__(cls)
     def default_clean(self):
@@ -61,6 +61,7 @@ def create_model_form(request,admin_class):
     class Meta:
         model = admin_class.model
         fields = "__all__"
+        exclude = admin_class.form_exclude_fields
     attrs = {'Meta':Meta}
     model_form_class = type("AutoModelForm",(ModelForm,),attrs)
     setattr(model_form_class,'__new__',__new__)

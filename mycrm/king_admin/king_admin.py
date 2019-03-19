@@ -14,6 +14,7 @@ class BaseAdmin(object):
     filter_horizontal = []
     readonly_table = False
     actions = ["delete_selected_ojs",]
+    form_exclude_fields = []#不显示字段
     def delete_selected_ojs(self,request,querysets):
         app_name = self.model._meta.app_label
         table_name = self.model._meta.model_name
@@ -44,7 +45,7 @@ class CustomerAdmin(BaseAdmin):
     search_fields = ['qq','name','consultant__name']
     filter_horizontal = ('tags',)#复选框设置
     readonly_fields = ["qq","consultant","tags"]
-    readonly_table =True
+    readonly_table =False
 
     def default_form_validation(self):
         #对整个form验证
@@ -68,7 +69,10 @@ class CustomerFollowUpAdmin(BaseAdmin):
     list_display = ['customer','consultant','date']
 
 class UserProfileAdmin(BaseAdmin):
-    list_display = ['user','name']
+    list_display = ['email','name']
+    readonly_fields = ['password']
+    filter_horizontal = ("user_permissions","groups")
+    form_exclude_fields = ["last_login"]
 
 #注册admin方法
 def register(model_class,admin_class=None):
