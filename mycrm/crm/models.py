@@ -238,11 +238,11 @@ class UserProfile(AbstractBaseUser,PermissionsMixin):
         max_length=255,
         unique=True,
         )
-    password = models.CharField(_('password'), max_length=128,help_text=mark_safe('''<a href="password/">修改密码</a>'''))
+    password = models.CharField(_('password'),max_length=128,help_text=mark_safe('''<a href="password/">修改密码</a>'''))
     name = models.CharField(max_length=32,verbose_name="用户姓名")
     is_active = models.BooleanField(default=True)
     is_admin = models.BooleanField(default=False)
-
+    roles = models.ManyToManyField("Role",blank=True)
     objects = UserProfileManager()
 
     USERNAME_FIELD = 'email'

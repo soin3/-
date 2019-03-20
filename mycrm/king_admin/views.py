@@ -3,13 +3,15 @@ from king_admin import king_admin
 from king_admin.utils import table_filter,table_sort,table_search
 from django.core.paginator import Paginator, EmptyPage, PageNotAnInteger
 from king_admin.forms import create_model_form
-
+from django.contrib.auth.decorators import login_required
 # Create your views here.
+
+@login_required
 def index(request):
     #print(king_admin.enabled_admins)
     return render(request, "king_admin/table_index.html",{"table_list":king_admin.enabled_admins})
 
-
+@login_required
 def display_table_objs(request,app_name,table_name):
     admin_class = king_admin.enabled_admins[app_name][table_name]
     if request.method == "POST":#action
@@ -50,7 +52,7 @@ def display_table_objs(request,app_name,table_name):
                    "search_text":request.GET.get("search",''),
                   },
                   )
-
+@login_required
 def table_objs_change(request,app_name,table_name,obj_id):
     admin_class = king_admin.enabled_admins[app_name][table_name]
     model_form_class = create_model_form(request,admin_class)
@@ -66,7 +68,7 @@ def table_objs_change(request,app_name,table_name,obj_id):
                                                                "admin_class":admin_class,
                                                                "app_name":app_name,
                                                                "table_name":table_name})
-
+@login_required
 def table_objs_add(request,app_name,table_name):
     admin_class = king_admin.enabled_admins[app_name][table_name]
     admin_class.is_add_form = True
@@ -80,6 +82,7 @@ def table_objs_add(request,app_name,table_name):
         form_obj = model_form_class()
     return render(request,"king_admin/table_objs_add.html",{"form_obj":form_obj,"admin_class":admin_class,})
 
+@login_required
 def table_objs_delete(request,app_name,table_name,obj_id):
     admin_class = king_admin.enabled_admins[app_name][table_name]
     obj = admin_class.model.objects.get(id=obj_id)
@@ -92,11 +95,10 @@ def table_objs_delete(request,app_name,table_name,obj_id):
         if not admin_class.readonly_table:
             obj.delete()
             return redirect("/king_admin/%s/%s/"%(app_name,table_name))
-
-
     return render(request,"king_admin/table_objs_delete.html",{"obj":obj,"admin_class":admin_class,
                                                                "app_name":app_name,"table_name":table_name,"error":error})
 
+@login_required
 def change_password(request,app_name,table_name,obj_id):
     admin_class = king_admin.enabled_admins[app_name][table_name]
     model_form_class = create_model_form(request,admin_class)

@@ -39,7 +39,7 @@ class BaseAdmin(object):
 
 
 class CustomerAdmin(BaseAdmin):
-    list_display = ['id','qq','name','source','consultant','consult_course','date','content','status']
+    list_display = ['id','qq','name','source','consultant','consult_course','date','content','status','enroll']
     list_filters = ['source','consultant','consult_course','date']
     list_per_page = 5
     search_fields = ['qq','name','consultant__name']
@@ -57,7 +57,9 @@ class CustomerAdmin(BaseAdmin):
             #         code='invalid',
             #         params= {'field':"咨询详情",})
 
-
+    def enroll(self):#显示数据库中不存在的字段
+        return '''<a href="%s/enrollment/">报名</a>'''%self.instance.id
+    enroll.display_name = "报名链接"
     # def clean_name(self):
     #     #对单个字段验证
     #     print(self.cleaned_data["name"])
