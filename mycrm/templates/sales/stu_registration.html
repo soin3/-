@@ -1,0 +1,67 @@
+{% extends "base.html" %}
+{% load crm_tags %}
+
+{% block body %}
+    <div class="container col-lg-8 col-md-offset-2">
+        <div class="panel panel-success ">
+            <div class="panel-heading">
+                <h3 class="panel-title">报名</h3>
+            </div>
+            <div class="panel-body">
+                <form class="form-horizontal" onsubmit="return RegisterFormCheck()">
+                {% csrf_token %}
+                    {% for field in customer_form %}
+                        <div class="form-group">
+                            <label for="inputEmail3" class="col-sm-2 control-label">{{ field.label }}</label>
+
+                            <div class="col-sm-9">
+                                {{ field }}
+                            </div>
+                        </div>
+                    {% endfor %}
+                    <hr>
+                    <div class="form-group">
+                        <label for="inputEmail3" class="col-sm-2 control-label">所报班级</label>
+
+                        <div class="col-sm-9">
+                            {{ enrollment_obj.enrolled_class }}
+                        </div>
+                    </div>
+                    <div class="form-group">
+                        <label for="inputEmail3" class="col-sm-2 control-label">课程费用</label>
+
+                        <div class="col-sm-9">
+                            {{ enrollment_obj.enrolled_class.course.price }}
+                        </div>
+                    </div>
+                    <div class="form-group">
+                        <label for="inputEmail3" class="col-sm-2 control-label">我的合同</label>
+
+                        <div class="col-sm-12">
+                            <pre style="height: 600px;overflow: auto">{% render_contract enrollment_obj %}</pre>
+                        </div>
+                    </div>
+                    <div class="form-group">
+                        <div class="col-sm-12">
+                            <input type="checkbox" name='contract_agreed'>我已认真阅读完协议并接受所有条款
+                        </div>
+                    </div>
+                    <div class="text-center"><input type="submit"class="btn btn-info" value="提交"></div>
+
+                </form>
+            </div>
+        </div>
+    </div>
+    <script>
+        function  RegisterFormCheck(){
+            console.log('sdfgds')
+            if ($("form:checkbox").prop("checked")){
+                return true;
+            }
+            else {
+                alert("必须同意条款");
+                return false;
+            }
+        }
+    </script>
+{% endblock %}

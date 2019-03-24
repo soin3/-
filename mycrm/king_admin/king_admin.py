@@ -58,7 +58,7 @@ class CustomerAdmin(BaseAdmin):
             #         params= {'field':"咨询详情",})
 
     def enroll(self):#显示数据库中不存在的字段
-        return '''<a href="%s/enrollment/">报名</a>'''%self.instance.id
+        return '''<a href="/crm/customer/%s/enrollment/">报名</a>'''%self.instance.id
     enroll.display_name = "报名链接"
     # def clean_name(self):
     #     #对单个字段验证

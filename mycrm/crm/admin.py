@@ -22,7 +22,7 @@ admin.site.register(models.Payment)
 admin.site.register(models.Role)
 admin.site.register(models.Branch)
 admin.site.register(models.Menu)
-
+admin.site.register(models.Contract)
 
 class UserCreationForm(forms.ModelForm):
     """A form for creating new users. Includes all the required

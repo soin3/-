@@ -15,6 +15,8 @@ class Customer(models.Model):
     #客户在咨询时，多是通过qq,所以这里就把qq号做为唯一标记客户的值，不能重复
     qq = models.CharField(verbose_name="qq号",max_length=64,unique=True,help_text=u'QQ号必须唯一')
     qq_name = models.CharField(verbose_name="qq名称",max_length=64,blank=True,null=True)
+    id_num = models.CharField(verbose_name="身份证",max_length=64,blank=True,null=True)
+    email = models.EmailField(verbose_name="邮箱",max_length=64,blank=True,null=True)
     source_choices = ((0,'转介绍'),
                       (1,'qq'),
                       (2,'微信'),
@@ -90,8 +92,8 @@ class Enrollment(models.Model):
     customer = models.ForeignKey("Customer",on_delete=models.CASCADE)
     enrolled_class = models.ForeignKey("ClassList",verbose_name="所报班级",on_delete=models.CASCADE)
     consultant = models.ForeignKey("UserProfile",verbose_name="课程顾问",on_delete=models.CASCADE)
-    contract_agreed = models.BooleanField("学员已同意合同")
-    contract_approved = models.BooleanField("审批通过", help_text="合同已审核")
+    contract_agreed = models.BooleanField("学员已同意合同",default=0)
+    contract_approved = models.BooleanField("审批通过", help_text="合同已审核",default=0)
     date = models.DateTimeField(auto_now_add=True)
 
     def __str__(self):
@@ -114,14 +116,26 @@ class ClassList(models.Model):
     teachers = models.ManyToManyField("UserProfile")
     start_date = models.DateField(verbose_name="开班日期")
     end_date = models.DateField(verbose_name="结业日期",blank=True,null=True)
+    contract = models.ForeignKey("Contract",blank=True,null=True,on_delete=models.CASCADE)
 
     def __str__(self):
-        return "%s %s %s" %(self.branch,self.course,self.semester)
+        return "%s %s %s"%(self.branch,self.course,self.semester)
 
     class Meta:
-        unique_together = ('branch','course','semester')
-        verbose_name = "ClassList班级信息表"
-        verbose_name_plural ="ClassList班级信息表"
+        verbose_name = "ClassList班级表"
+        verbose_name_plural ="ClassList班级表"
+
+class Contract(models.Model):
+    '''合同表'''
+    name = models.CharField("合同名称",max_length=64,unique=True)
+    template = models.TextField()
+
+    def __str__(self):
+        return self.name
+
+    class Meta:
+        verbose_name = " Contract合同表"
+        verbose_name_plural ="Contract合同表"
 
 class Course(models.Model):
     '''存储所开设课程的信息'''
