@@ -8,33 +8,18 @@
                 <h3 class="panel-title">报名</h3>
             </div>
             <div class="panel-body">
+            {% if status != 1 %}
                 <form class="form-horizontal" method="post" onsubmit="return RegisterFormCheck()">
                     {% csrf_token %}
-{#                    dfasdfasdfa#}
-                {% for field in customer_form %}
-                <div class="form-group col-lg-6">
-                    <label class="col-md-3 control-label">{{ field.label }}</label>
-                    <div class="col-md-9">
-                        {{ field }}
-                    </div>
-                </div>
-            {% endfor %}
-{#                <div class="form-group col-lg-6">#}
-{#                    <label class="col-md-3 control-label" for="demo-text-input">姓名</label>#}
-{#                    <div class="col-md-9">#}
-{#                        <p class="form-control-static">{{ enrollment_obj.customer.qq }}</p>#}
-{#                        <small class="help-block">This is a help text</small>#}
-{#                    </div>#}
-{#                </div>#}
-{#dfasdfasd#}
-{#                    {% for field in customer_form %}#}
-{#                        <div class="form-group">#}
-{#                            <label for="inputEmail3" class="col-sm-2 control-label">{{ field.label }}</label>#}
-{#                            <div class="col-sm-9">#}
-{#                                {{ field }}#}
-{#                            </div>#}
-{#                        </div>#}
-{#                    {% endfor %}#}
+                    {% for field in customer_form %}
+                        <div class="form-group col-lg-6">
+                            <label class="col-md-3 control-label">{{ field.label }}</label>
+
+                            <div class="col-md-9">
+                                {{ field }}
+                            </div>
+                        </div>
+                    {% endfor %}
                     <div class="form-group col-lg-6">
                         <label for="inputEmail3" class="col-md-3 control-label">所报班级</label>
 
@@ -58,14 +43,18 @@
                     <div class="text-center"><input type="submit" class="btn btn-info" value="提交"></div>
 
                 </form>
+            {% else %}
+                <h2>感谢，报名表已提交，您的合同将很快被审核!</h2>
+            {% endif %}
             </div>
         </div>
     </div>
     <script>
         function RegisterFormCheck() {
-            if ($("form :checkbox").prop("checked") ){
+            if ($("form :checkbox").prop("checked")) {
+                $("form").find("[disabled]").removeAttr("disabled");
                 return true
-            }else{
+            } else {
                 alert("必须同意条款才能提交");
                 return false
             }

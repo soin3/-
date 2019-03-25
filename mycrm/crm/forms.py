@@ -19,6 +19,12 @@ class CustomerForm(ModelForm):
             if field_name in cls.Meta.readonly_fields:#如果在只读列表，字段就不可更改
                  field_obj.widget.attrs['disabled']='disabled'
          return ModelForm.__new__(cls)
+
+    def clean_qq(self):#需要写多个字段
+        if self.instance.qq != self.cleaned_data['qq']:
+            self.add_error("非法请求")
+        return self.cleaned_data["qq"]
+
     class Meta:
         model = models.Customer
         fields = "__all__"
