@@ -9,5 +9,4 @@ urlpatterns = [
     # url(r'^teacher', views.index,name="my_class_list"),
     url(r'^customer/registration/(\d+)/',views.stu_registration,name="stu_registration"),
 
-
 ]
