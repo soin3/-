@@ -8,45 +8,61 @@
                 <h3 class="panel-title">报名</h3>
             </div>
             <div class="panel-body">
-            {% if status != 1 %}
-                <form class="form-horizontal" method="post" onsubmit="return RegisterFormCheck()">
-                    {% csrf_token %}
-                    {% for field in customer_form %}
-                        <div class="form-group col-lg-6">
-                            <label class="col-md-3 control-label">{{ field.label }}</label>
+                {% if status != 1 %}
+                    <form class="form-horizontal" method="post" onsubmit="return RegisterFormCheck()">
+                        {% csrf_token %}
+                        {% for field in customer_form %}
+                            <div class="form-group col-lg-6">
+                                <label class="col-md-3 control-label">{{ field.label }}</label>
 
-                            <div class="col-md-9">
-                                {{ field }}
+                                <div class="col-md-9">
+                                    {{ field }}
+                                </div>
+                            </div>
+                        {% endfor %}
+                        <div class="form-group col-lg-6">
+                            <label for="inputEmail3" class="col-md-3 control-label">所报班级</label>
+
+                            <div class="col-sm-9">
+                                {{ enrollment_obj.enrolled_class }}
                             </div>
                         </div>
-                    {% endfor %}
-                    <div class="form-group col-lg-6">
-                        <label for="inputEmail3" class="col-md-3 control-label">所报班级</label>
 
-                        <div class="col-sm-9">
-                            {{ enrollment_obj.enrolled_class }}
+                        <div class="form-group col-lg-12">
+                            <label for="inputEmail3" class="col-md-6 control-label"
+                                   style="color: #204d74;font-size: large">我的合同</label>
+
+                            <div class="col-sm-12">
+                                <pre style="height: 600px;overflow: auto">{% render_contract enrollment_obj %}</pre>
+                            </div>
                         </div>
-                    </div>
-
-                    <div class="form-group col-lg-12">
-                        <label for="inputEmail3" class="col-md-6 control-label" style="color: #204d74;font-size: large">我的合同</label>
-
-                        <div class="col-sm-12">
-                            <pre style="height: 600px;overflow: auto">{% render_contract enrollment_obj %}</pre>
+                        <div class="form-group">
+                            <div class="col-sm-12">
+                                <input type="checkbox" name='contract_agreed'>我已认真阅读完协议并接受所有条款
+                            </div>
                         </div>
-                    </div>
-                    <div class="form-group">
-                        <div class="col-sm-12">
-                            <input type="checkbox" name='contract_agreed'>我已认真阅读完协议并接受所有条款
-                        </div>
-                    </div>
-                    <div class="text-center"><input type="submit" class="btn btn-info" value="提交"></div>
+                        <div class="text-center"><input type="submit" class="btn btn-info" value="提交"></div>
 
-                </form>
-            {% else %}
-                <h2>感谢，报名表已提交，您的合同将很快被审核!</h2>
-            {% endif %}
+                    </form>
+                {% else %}
+                    <h2>感谢，报名表已提交，您的合同将很快被审核!</h2>
+                {% endif %}
             </div>
+            <hr>
+            <p>请上传身份证正反面照片</p>
+            <form id="filedropzone" method="post" action="{{ request.path }}"
+                  class="dropzone dz-clickable">{% csrf_token %}
+                <div class="dz-default dz-message">
+                    <div class="dz-icon icon-wrap icon-circle icon-wrap-md">
+                        <i class="fa fa-cloud-upload fa-3x"></i>
+                    </div>
+                    <div>
+                        <p class="dz-text">把身份证正反面照片拖到这里</p>
+
+                        <p class="text-muted">最多上传两张照片</p>
+                    </div>
+                </div>
+            </form>
         </div>
     </div>
     <script>
@@ -59,5 +75,21 @@
                 return false
             }
         }
+
+    $(document).ready(function () {
+        Dropzone.options.filedropzone = {
+          url:"{{ request.path }}",
+          paramName: "file", // The name that will be used to transfer the file
+          maxFilesize: 1, // MB,
+          addRemoveLinks:true,
+          maxFiles:5,
+          uploadMultiple:true,
+          accept: function(file, done) {
+            if (file.name == "justinbieber.jpg") {
+              done("Naha, you don't.");
+            }
+            else { done(); }
+          }
+        };
     </script>
 {% endblock %}

@@ -50,6 +50,8 @@ def stu_registration(request,enrollment_id):
         enrollment_obj = models.Enrollment.objects.get(id = enrollment_id)
         customers_form = forms.CustomerForm(instance=enrollment_obj.customer)
         if request.method == "POST":
+            if request.is_ajax():
+                print(request.FILES)
             customers_form = forms.CustomerForm(request.POST,instance=enrollment_obj.customer)
             if customers_form.is_valid():
                 enrollment_obj.contract_agreed= True
