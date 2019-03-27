@@ -48,6 +48,7 @@
                     <h2>感谢，报名表已提交，您的合同将很快被审核!</h2>
                 {% endif %}
             </div>
+            {% if status == 0 %}
             <hr>
             <p>请上传身份证正反面照片</p>
             <form id="filedropzone" method="post" action="{{ request.path }}"
@@ -63,10 +64,17 @@
                     </div>
                 </div>
             </form>
+        {% endif %}
         </div>
     </div>
+
     <script>
         function RegisterFormCheck() {
+            if (myDropzone.files.length <2){
+            alert("必须至少上传2张图片");
+                return false
+        }
+
             if ($("form :checkbox").prop("checked")) {
                 $("form").find("[disabled]").removeAttr("disabled");
                 return true
@@ -77,19 +85,29 @@
         }
 
     $(document).ready(function () {
+        Dropzone.autoDiscover = false;
         Dropzone.options.filedropzone = {
           url:"{{ request.path }}",
           paramName: "file", // The name that will be used to transfer the file
-          maxFilesize: 1, // MB,
+          maxFilesize: 2, // MB,
           addRemoveLinks:true,
-          maxFiles:5,
+          maxFiles:2,
           uploadMultiple:true,
           accept: function(file, done) {
-            if (file.name == "justinbieber.jpg") {
+            if (file.name == "justinbieber.JPG") {
               done("Naha, you don't.");
             }
             else { done(); }
           }
-        };
+        }});
+
+        // or disable for specific dropzone:
+        // Dropzone.options.myDropzone = false;
+        myDropzone = new Dropzone("#filedropzone");
+          myDropzone.on("addedfile", function(file) {
+            /* Maybe display some more file information on your page */
+
+          });
+
     </script>
 {% endblock %}

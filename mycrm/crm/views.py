@@ -1,6 +1,8 @@
 from django.shortcuts import render,HttpResponse
 from crm import forms,models
 from django.db import IntegrityError
+import os
+from mycrm import  settings
 import random,string
 # from django.core.cache import cache
 
@@ -49,9 +51,20 @@ def stu_registration(request,enrollment_id):
     # if cache.get(enrollment_id) == random_str:
         enrollment_obj = models.Enrollment.objects.get(id = enrollment_id)
         customers_form = forms.CustomerForm(instance=enrollment_obj.customer)
+        status = 0
         if request.method == "POST":
             if request.is_ajax():
-                print(request.FILES)
+                enroll_data_dir = "%s/%s"%(settings.ENROLL_DATA,enrollment_id)
+                if not os.path.exists(enroll_data_dir):
+                    os.makedirs(enroll_data_dir,exist_ok=True)
+                #传文件
+                for k,file_obj in request.FILES.items():
+                    with open("%s/%s"%(enroll_data_dir,file_obj.name),"wb") as f:
+                        for chunk in file_obj.chunks():
+                            f.write((chunk))
+                return HttpResponse("SS")
+
+
             customers_form = forms.CustomerForm(request.POST,instance=enrollment_obj.customer)
             if customers_form.is_valid():
                 enrollment_obj.contract_agreed= True
