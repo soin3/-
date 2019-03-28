@@ -284,7 +284,8 @@ class UserProfile(AbstractBaseUser,PermissionsMixin):
 
 class Payment(models.Model):
     '''缴费记录'''
-    customer = models.ForeignKey("Customer",on_delete=models.CASCADE)
+    customer = models.ForeignKey("Customer",on_delete=models.CASCADE,verbose_name="缴费人")
+    course = models.ForeignKey("Course",on_delete=models.CASCADE,verbose_name="所报课程")
     paid_fee = models.IntegerField(verbose_name="费用数额", default=0)
     note = models.TextField("备注",blank=True, null=True)
     date = models.DateTimeField("交款日期", auto_now_add=True)

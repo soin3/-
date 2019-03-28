@@ -1,4 +1,4 @@
-from django.shortcuts import render,HttpResponse
+from django.shortcuts import render,HttpResponse,redirect
 from crm import forms,models
 from django.db import IntegrityError
 import os,json
@@ -27,7 +27,6 @@ def enrollment(request,customer_id):
                 enrollment_form.cleaned_data["customer"]=customer_obj
                 enrollment_obj = models.Enrollment.objects.create(**enrollment_form.cleaned_data)
                 msgs["msg"] = msg.format(enrollment_obj_id =enrollment_obj.id)
-                print("页面链接",msgs)
 
                 #设置报名链接的超时时间
                 # msgs["msg"] = msg.format(enrollment_obj_id =enrollment_obj.id)
@@ -39,6 +38,8 @@ def enrollment(request,customer_id):
                 enrollment_obj = models.Enrollment.objects.get(customer_id=customer_obj.id,
                                                                enrolled_class_id = enrollment_form.cleaned_data["enrolled_class"].id)
                 errors["error"] = "*该用户的报名信息已存在"
+                if enrollment_obj.contract_agreed:
+                    return redirect("/crm/contract_review/%s/"%enrollment_obj.id)
 
         else:
             errors["error"] = "*请勿重复提交"
@@ -87,3 +88,43 @@ def stu_registration(request,enrollment_id):
         return render(request,'sales/stu_registration.html',{"customer_form":customers_form,"enrollment_obj":enrollment_obj,"status":status})
     # else:
     #     return  HttpResponse("链接已失效")
+
+def contract_review(request,enrollment_id):
+    enroll_obj = models.Enrollment.objects.get(id=enrollment_id)
+    enroll_form = forms.EnrollmentForm(instance=enroll_obj)
+    customers_form = forms.CustomerForm(instance=enroll_obj.customer)
+    return render(request, 'sales/contract_review.html',{"enroll_obj":enroll_obj,
+                                                "customers_form":customers_form,"enroll_form":enroll_form})
+
+def enrollment_rejection(request,enrollment_id):
+    enroll_obj = models.Enrollment.objects.get(id=enrollment_id)
+    enroll_obj.contract_agreed = False
+    enroll_obj.save()
+    return redirect("/crm/customer/%s/enrollment/"%enroll_obj.customer.id)
+
+def payment(request,enrollment_id):
+    enroll_obj = models.Enrollment.objects.get(id=enrollment_id)
+    errors = ''
+    if request.method == "POST":
+        payment_amount = request.POST.get("amount")
+        if payment_amount:
+            payment_amount = int(payment_amount)
+            if payment_amount <500:
+                errors="*金额不能低于500元"
+            else:
+                payment_obj = models.Payment.objects.create(
+                    customer = enroll_obj.customer,
+                    course = enroll_obj.enrolled_class.course,
+                    paid_fee = payment_amount,
+                    consultant = enroll_obj.consultant
+                )
+                enroll_obj.contract_approved = True
+                enroll_obj.save()
+                enroll_obj.customer.status = 1
+                enroll_obj.customer.save()
+                return redirect("/king_admin/crm/customer/")
+        else:
+            errors='*请填写金额'
+
+    return render(request,"sales/payment.html",{"enroll_obj":enroll_obj,
+                                                "errors":errors})
