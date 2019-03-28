@@ -1,7 +1,7 @@
 from django.shortcuts import render,HttpResponse
 from crm import forms,models
 from django.db import IntegrityError
-import os
+import os,json
 from mycrm import  settings
 import random,string
 # from django.core.cache import cache
@@ -57,12 +57,19 @@ def stu_registration(request,enrollment_id):
                 enroll_data_dir = "%s/%s"%(settings.ENROLL_DATA,enrollment_id)
                 if not os.path.exists(enroll_data_dir):
                     os.makedirs(enroll_data_dir,exist_ok=True)
-                #传文件
-                for k,file_obj in request.FILES.items():
-                    with open("%s/%s"%(enroll_data_dir,file_obj.name),"wb") as f:
-                        for chunk in file_obj.chunks():
-                            f.write((chunk))
-                return HttpResponse("SS")
+                if len(os.listdir(enroll_data_dir)) <2:
+                    #传文件
+                    for k,file_obj in request.FILES.items():
+                        file_type = os.path.splitext(file_obj.name)[1]
+                        if file_type in ('.jpg','.png'):
+                            with open("%s/%s"%(enroll_data_dir,file_obj.name),"wb") as f:
+                                for chunk in file_obj.chunks():
+                                    f.write((chunk))
+                        else:
+                            return HttpResponse(json.dumps({"status":False,"err_msg":"只能上传jpg,png格式的图片"}))
+                    return HttpResponse(json.dumps({'status': True, }), )
+                else:
+                    return HttpResponse(json.dumps({"status":False,"err_msg":"最多只能传2张照片"}))
 
 
             customers_form = forms.CustomerForm(request.POST,instance=enrollment_obj.customer)

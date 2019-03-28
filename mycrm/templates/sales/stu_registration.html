@@ -41,7 +41,7 @@
                                 <input type="checkbox" name='contract_agreed'>我已认真阅读完协议并接受所有条款
                             </div>
                         </div>
-                        <div class="text-center"><input type="submit" class="btn btn-info" value="提交"></div>
+                        <div class="text-center"><input id="qr" type="submit" class="btn btn-info" value="提交"></div>
 
                     </form>
                 {% else %}
@@ -49,31 +49,31 @@
                 {% endif %}
             </div>
             {% if status == 0 %}
-            <hr>
-            <p>请上传身份证正反面照片</p>
-            <form id="filedropzone" method="post" action="{{ request.path }}"
-                  class="dropzone dz-clickable">{% csrf_token %}
-                <div class="dz-default dz-message">
-                    <div class="dz-icon icon-wrap icon-circle icon-wrap-md">
-                        <i class="fa fa-cloud-upload fa-3x"></i>
-                    </div>
-                    <div>
-                        <p class="dz-text">把身份证正反面照片拖到这里</p>
+                <hr>
+                <p>请上传身份证正反面照片</p>
+                <form id="filedropzone" method="post" action="{{ request.path }}"
+                      class="dropzone dz-clickable">{% csrf_token %}
+                    <div class="dz-default dz-message">
+                        <div class="dz-icon icon-wrap icon-circle icon-wrap-md">
+                            <i class="fa fa-cloud-upload fa-3x"></i>
+                        </div>
+                        <div>
+                            <p class="dz-text">把身份证正反面照片拖到这里</p>
 
-                        <p class="text-muted">最多上传两张照片</p>
+                            <p class="text-muted">最多上传两张照片</p>
+                        </div>
                     </div>
-                </div>
-            </form>
-        {% endif %}
+                </form>
+            {% endif %}
         </div>
     </div>
 
     <script>
         function RegisterFormCheck() {
-            if (myDropzone.files.length <2){
-            alert("必须至少上传2张图片");
+            if (myDropzone.files.length < 2) {
+                alert("必须至少上传2张图片");
                 return false
-        }
+            }
 
             if ($("form :checkbox").prop("checked")) {
                 $("form").find("[disabled]").removeAttr("disabled");
@@ -84,30 +84,44 @@
             }
         }
 
-    $(document).ready(function () {
-        Dropzone.autoDiscover = false;
-        Dropzone.options.filedropzone = {
-          url:"{{ request.path }}",
-          paramName: "file", // The name that will be used to transfer the file
-          maxFilesize: 2, // MB,
-          addRemoveLinks:true,
-          maxFiles:2,
-          uploadMultiple:true,
-          accept: function(file, done) {
-            if (file.name == "justinbieber.JPG") {
-              done("Naha, you don't.");
+        $(document).ready(function () {
+            Dropzone.autoDiscover = false;
+            Dropzone.options.filedropzone = {
+                url: "{{ request.path }}",
+                paramName: "file", // The name that will be used to transfer the file
+                maxFilesize: 2, // MB,
+                addRemoveLinks: true,
+                maxFiles: 2,
+                uploadMultiple: true,
+                accept: function (file, done) {
+                    if (file.name == "github.txt") {
+                        alert("Naha, you don't.")
+                        {#              done("Naha, you don't.");#}
+                    }
+                    else {
+                        done();
+                    }
+                }
             }
-            else { done(); }
-          }
-        }});
-
+        });
         // or disable for specific dropzone:
         // Dropzone.options.myDropzone = false;
         myDropzone = new Dropzone("#filedropzone");
-          myDropzone.on("addedfile", function(file) {
+        myDropzone.on("addedfile", function (file) {
             /* Maybe display some more file information on your page */
+        });
+        myDropzone.on("success", function (file, response) {
+            /* Maybe display some more file information on your page */
+            response = JSON.parse(response);
+            if (!response.status) {
+                window.alert(response.err_msg);
+                window.location.reload()
+            } else {
+                window.alert("上传成功！");
 
-          });
+            }
+
+        })
 
     </script>
 {% endblock %}
