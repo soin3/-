@@ -35,14 +35,22 @@ def enrollment(request,customer_id):
                 # msgs["msg"] = msg.format(enrollment_obj_id =enrollment_obj.id,random_str=random_str)
 
             except IntegrityError as e:
-                enrollment_obj = models.Enrollment.objects.get(customer_id=customer_obj.id,
+                enrollment_obj = models.Enrollment.objects.get(customer_id = customer_obj.id,
                                                                enrolled_class_id = enrollment_form.cleaned_data["enrolled_class"].id)
-                errors["error"] = "*该用户的报名信息已存在"
+                msgs["msg"] = msg.format(enrollment_obj_id =enrollment_obj.id)
+                if enrollment_obj.contract_agreed and enrollment_obj.contract_approved:
+                    errors["error"] = "*此报名已审核，无需重复填写"
+                    return render(request,"sales/enrollment.html",{"enrollment_form":enrollment_form,"errors":errors,
+                                                   "customer_obj":customer_obj,"msgs":msgs})
+                else:
+                    errors["error"] = "*报名信息未完成,请让用户填写"
+
                 if enrollment_obj.contract_agreed:
                     return redirect("/crm/contract_review/%s/"%enrollment_obj.id)
 
+
         else:
-            errors["error"] = "*请勿重复提交"
+            errors["error"] = "*该用户的报名信息已存在"
     else:
         enrollment_form = forms.EnrollmentForm()
     return render(request,"sales/enrollment.html",{"enrollment_form":enrollment_form,"errors":errors,
@@ -55,7 +63,7 @@ def stu_registration(request,enrollment_id):
         status = 0
         if request.method == "POST":
             if request.is_ajax():
-                enroll_data_dir = "%s/%s"%(settings.ENROLL_DATA,enrollment_id)
+                enroll_data_dir = "%s/%s/id_img"%(settings.ENROLL_DATA,enrollment_id)#存放身份证图片路径
                 if not os.path.exists(enroll_data_dir):
                     os.makedirs(enroll_data_dir,exist_ok=True)
                 if len(os.listdir(enroll_data_dir)) <2:
@@ -100,6 +108,10 @@ def enrollment_rejection(request,enrollment_id):
     enroll_obj = models.Enrollment.objects.get(id=enrollment_id)
     enroll_obj.contract_agreed = False
     enroll_obj.save()
+    enroll_data_dir = "%s/%s/id_img"%(settings.ENROLL_DATA,enrollment_id)#存放身份证图片路径
+    print(enroll_data_dir)
+    import shutil#清空目录下的内容
+    shutil.rmtree(enroll_data_dir)
     return redirect("/crm/customer/%s/enrollment/"%enroll_obj.customer.id)
 
 def payment(request,enrollment_id):
