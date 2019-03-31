@@ -3,6 +3,6 @@ from student import views
 from django.conf.urls import url
 
 urlpatterns = [
-    url(r'^$', views.index,name="stu_index"),
+    url(r'^$', views.stu_my_classes,name="stu_my_classes"),
 
 ]

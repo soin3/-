@@ -41,3 +41,4 @@ class PaymentForm(ModelForm):
     class Meta:
         model = models.Payment
         fields = "__all__"
+

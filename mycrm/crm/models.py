@@ -173,14 +173,14 @@ class CourseRecord(models.Model):
 
 class StudyRecord(models.Model):
     '''存储所有学员的详细的学习成绩情况'''
-    student = models.ForeignKey("Customer",verbose_name="学员",on_delete=models.CASCADE)
+    student = models.ForeignKey("Enrollment",verbose_name="学员",on_delete=models.CASCADE)
     course_record = models.ForeignKey("CourseRecord", verbose_name="第几天课程",on_delete=models.CASCADE)
     record_choices = ((0,"已签到"),
                       (1,"迟到"),
                       (2,"缺勤"),
                       (3,"早退"),
                       )
-    record = models.CharField(verbose_name="上课纪录",choices=record_choices,default="checked",max_length=64)
+    record = models.IntegerField(verbose_name="上课纪录",choices=record_choices,default=0,max_length=64)
     score_choices = ((100, 'A+'),   (90,'A'),
                      (85,'B+'),     (80,'B'),
                      (70,'B-'),     (60,'C+'),
@@ -258,6 +258,7 @@ class UserProfile(AbstractBaseUser,PermissionsMixin):
     is_admin = models.BooleanField(default=False)
     roles = models.ManyToManyField("Role",blank=True)
     objects = UserProfileManager()
+    stu_account = models.ForeignKey("Customer",verbose_name="学员账号",blank=True,null=True,help_text="只有学员报名后才能创建",on_delete=models.CASCADE)
 
     USERNAME_FIELD = 'email'
     REQUIRED_FIELDS = ['name']

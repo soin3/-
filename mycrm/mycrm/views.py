@@ -17,3 +17,6 @@ def access_login(request):
 def access_logout(request):
     logout(request)
     return redirect("/account/login/")
+
+def index(request):
+     return  render(request,"index.html")

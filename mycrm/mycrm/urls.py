@@ -4,6 +4,7 @@ from mycrm import views
 
 urlpatterns = [
     url(r'^admin/', admin.site.urls),
+     url(r'^$', views.index),
     url(r'^crm/', include("crm.urls")),
     url(r'^student/', include("student.urls")),
     url(r'^king_admin/', include("king_admin.urls")),

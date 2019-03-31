@@ -1,5 +1,6 @@
 __author__ = 'Administrator'
 from django.contrib import admin
+from django.shortcuts import HttpResponse,redirect
 from crm import models
 # Register your models here.
 from django import forms
@@ -10,13 +11,45 @@ from crm.models import UserProfile
 
 class UserProfileAdmin(admin.ModelAdmin):
     list_display = ('user','name')
+
+
+class CourseRecordAdmin(admin.ModelAdmin):
+    list_display = ('from_class','day_num','teacher','has_homework','homework_title','date')
+    def initialize_studyrecords(self,request,queryset):
+        if len(queryset)>1:
+            return HttpResponse("nonono")
+        #print(queryset[0].from_class.enrollment_set.all())#反查出所有报名此班级课程的学员
+        new_obj_list = []
+        for enroll_obj in queryset[0].from_class.enrollment_set.all():
+
+            new_obj_list.append(models.StudyRecord(
+                student = enroll_obj,
+                course_record = queryset[0],
+                record = 0,
+                score = 0,
+            ))
+        try:
+            models.StudyRecord.objects.bulk_create(new_obj_list)#批量创建
+        except Exception as e:
+            print('批量创建失败,请检查是否有对应记录')
+
+        return redirect("/admin/crm/studyrecord/%s%s"%('?course_record_id_exact=',queryset[0].id))
+    initialize_studyrecords.short_description = "初始化本节所有学员的上课记录"
+    actions = ['initialize_studyrecords']
+
+class StudyRecordAdmin(admin.ModelAdmin):
+    list_display = ('student','course_record','record','score','date')
+    list_filter = ['course_record','score','record']
+    list_editable = ['score','record']
+
+
 admin.site.register(models.Customer)
 admin.site.register(models.CustomerFollowUp)
 admin.site.register(models.Enrollment)
 admin.site.register(models.ClassList)
 admin.site.register(models.Course)
-admin.site.register(models.CourseRecord)
-admin.site.register(models.StudyRecord)
+admin.site.register(models.CourseRecord,CourseRecordAdmin)
+admin.site.register(models.StudyRecord,StudyRecordAdmin)
 # admin.site.register(models.UserProfile)
 admin.site.register(models.Payment)
 admin.site.register(models.Role)
@@ -101,5 +134,7 @@ admin.site.register(models.UserProfile, UserProfileAdmin)
 # ... and, since we're not using Django's built-in permissions,
 # unregister the Group model from admin.
 admin.site.unregister(Group)
+
+
 
 

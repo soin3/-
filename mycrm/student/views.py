@@ -1,7 +1,7 @@
 from django.shortcuts import render
 
 # Create your views here.
-def index(request):
-    return render(request,'student/index.html')
+def stu_my_classes(request):
+    return render(request,'student/stu_my_classes.html')
 
 
