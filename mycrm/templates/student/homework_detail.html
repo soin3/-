@@ -1,0 +1,94 @@
+{% extends 'index.html' %}
+{% load stu_tags %}
+
+{% block page-content %}
+
+    <div class="panel panel-default">
+  <!-- Default panel contents -->
+  <div class="panel-heading">班级：{{ studyrecord_obj.student.enrolled_class }}  |  节次：{{ studyrecord_obj.course_record.day_num }}</div>
+  <div class="panel-body">
+     <h4>作业标题:{{ studyrecord_obj.course_record.homework_title }}</h4>
+      <h4>作业详情:<pre>{{ studyrecord_obj.course_record.homework_content }}</pre></h4>
+        <h4>老师评语:{{ studyrecord_obj.memo }}</h4>
+      <h4>本节成绩:{{ studyrecord_obj.score }}</h4>
+{#    {{ request.user.stu_account }}#}
+  </div>
+<hr>
+        <p>{{ response_dic }}</p>
+                <p>请上传作业</p>
+                <form id="filedropzone" method="post" action="{{ request.path }}"
+                      class="dropzone dz-clickable">{% csrf_token %}
+                    <div class="dz-default dz-message">
+                        <div class="dz-icon icon-wrap icon-circle icon-wrap-md">
+                            <i class="fa fa-cloud-upload fa-3x"></i>
+                        </div>
+                        <div>
+
+                            <p class="dz-text">把作业拖到这里</p>
+
+                            <p class="text-muted">请压缩打包后上传</p>
+                        </div>
+                    </div>
+                </form>
+        </div>
+    </div>
+</div>
+{% endblock %}
+
+{% block bottom-js %}
+    <script>
+            function RegisterFormCheck() {
+            if (myDropzone.files.length < 2) {
+                alert("必须至少上传2张图片");
+                return false
+            }
+
+            if ($("form :checkbox").prop("checked")) {
+                $("form").find("[disabled]").removeAttr("disabled");
+                return true
+            } else {
+                alert("必须同意条款才能提交");
+                return false
+            }
+        }
+
+        $(document).ready(function () {
+            Dropzone.autoDiscover = false;
+            Dropzone.options.filedropzone = {
+                url: "{{ request.path }}",
+                paramName: "file", // The name that will be used to transfer the file
+                maxFilesize: 2, // MB,
+                addRemoveLinks: true,
+                maxFiles: 2,
+                uploadMultiple: true,
+                accept: function (file, done) {
+                    if (file.name == "github.txt") {
+                        alert("Naha, you don't.")
+                        {#              done("Naha, you don't.");#}
+                    }
+                    else {
+                        done();
+                    }
+                }
+            }
+        });
+        // or disable for specific dropzone:
+        // Dropzone.options.myDropzone = false;
+        myDropzone = new Dropzone("#filedropzone");
+        myDropzone.on("addedfile", function (file) {
+            /* Maybe display some more file information on your page */
+        });
+        myDropzone.on("success", function (file, response) {
+            /* Maybe display some more file information on your page */
+            response = JSON.parse(response);
+            if (!response.status) {
+                window.alert(response.err_msg);
+                window.location.reload()
+            } else {
+                window.alert("上传成功！");
+
+            }
+
+        })
+    </script>
+{% endblock %}

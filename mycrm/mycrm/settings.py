@@ -144,3 +144,4 @@ AUTH_USER_MODEL = 'crm.UserProfile'
 
 LOGIN_URL = "/account/login/"
 ENROLL_DATA = "%s/enroll_data"%BASE_DIR
+HOMEWORK = "%s/homework"%BASE_DIR

@@ -190,7 +190,7 @@ class StudyRecord(models.Model):
                      )
     score = models.IntegerField(verbose_name="本节成绩",choices=score_choices,default=0)
     date = models.DateTimeField(auto_now_add=True)
-    note = models.CharField(verbose_name="备注",max_length=255,blank=True,null=True)
+    memo = models.TextField(verbose_name="评语",blank=True,null=True)
 
     def __str__(self):
         return "%s %s %s" %(self.student,self.course_record,self.score)

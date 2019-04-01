@@ -29,7 +29,7 @@
               <td>已上{{ enroll_obj.enrolled_class.courserecord_set.all.count }}节课</td>
               <td>{% get_score enroll_obj request.user.stu_account as score_data%}
               {{ score_data.score__sum }}</td>
-              <td><a href="#">查看详情</a></td>
+              <td><a href="{% url 'studyrecords' enroll_obj.id%}">查看详情</a></td>
 
 
 

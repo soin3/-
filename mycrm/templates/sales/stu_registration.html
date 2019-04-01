@@ -94,7 +94,7 @@
                 maxFiles: 2,
                 uploadMultiple: true,
                 accept: function (file, done) {
-                    if (file.name == "github.txt") {
+                    if (! file.name.endsWith(".zip")) {
                         alert("Naha, you don't.")
                         {#              done("Naha, you don't.");#}
                     }
