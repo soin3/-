@@ -20,3 +20,6 @@ def access_logout(request):
 
 def index(request):
      return  render(request,"index.html")
+
+def newindex(request):
+    return render(request,"newindex.html")

@@ -180,7 +180,7 @@ class StudyRecord(models.Model):
                       (2,"缺勤"),
                       (3,"早退"),
                       )
-    record = models.IntegerField(verbose_name="上课纪录",choices=record_choices,default=0,max_length=64)
+    record = models.IntegerField(verbose_name="上课纪录",choices=record_choices,default=0)
     score_choices = ((100, 'A+'),   (90,'A'),
                      (85,'B+'),     (80,'B'),
                      (70,'B-'),     (60,'C+'),

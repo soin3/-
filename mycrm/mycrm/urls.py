@@ -10,4 +10,5 @@ urlpatterns = [
     url(r'^king_admin/', include("king_admin.urls")),
     url(r'^account/login/$', views.access_login),
     url(r'^account/logout/$', views.access_logout,name="access_logout"),
+    url(r'^newindex/$', views.newindex),
 ]
