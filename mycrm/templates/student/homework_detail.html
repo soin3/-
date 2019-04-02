@@ -3,55 +3,80 @@
 
 {% block page-content %}
 
+
+    <div>
+    <ul class="nav nav-tabs">
+                        <li role="presentation" ><a href="/student/">我的课程</a></li>
+                        <li role="presentation"><a href="/student/studyrecords/{{ studyrecord_obj.student.id }}">班级</a></li>
+                        <li role="presentation"class="active"><a href="#">作业详情</a></li>
+     </ul>
+    </div>
     <div class="panel panel-default">
-  <!-- Default panel contents -->
-  <div class="panel-heading">班级：{{ studyrecord_obj.student.enrolled_class }}  |  节次：{{ studyrecord_obj.course_record.day_num }}</div>
-  <div class="panel-body">
-     <h4>作业标题:{{ studyrecord_obj.course_record.homework_title }}</h4>
-      <h4>作业详情:<pre>{{ studyrecord_obj.course_record.homework_content }}</pre></h4>
-        <h4>老师评语:{{ studyrecord_obj.memo }}</h4>
-      <h4>本节成绩:{{ studyrecord_obj.score }}</h4>
-{#    {{ request.user.stu_account }}#}
-  </div>
-<hr>
-        <p>{{ response_dic }}</p>
-                <p>请上传作业</p>
-                <form id="filedropzone" method="post" action="{{ request.path }}"
-                      class="dropzone dz-clickable">{% csrf_token %}
-                    <div class="dz-default dz-message">
-                        <div class="dz-icon icon-wrap icon-circle icon-wrap-md">
-                            <i class="fa fa-cloud-upload fa-3x"></i>
-                        </div>
-                        <div>
+        <!-- Default panel contents -->
 
-                            <p class="dz-text">把作业拖到这里</p>
+        <div class="panel-heading">班级：{{ studyrecord_obj.student.enrolled_class }} |
+            节次：{{ studyrecord_obj.course_record.day_num }}</div>
+        <div class="panel-body">
+            <h4>作业标题:<b>{{ studyrecord_obj.course_record.homework_title }}</b></h4>
+            <hr>
+            <h4>作业详情:
+                <pre>{{ studyrecord_obj.course_record.homework_content }}</pre>
+            </h4>
+            <hr>
+            <h4>老师评语:
+                <pre>{{ studyrecord_obj.memo }}</pre>
+            </h4>
+            <hr>
+            <h4>本节成绩:<span style="color: red">{{ studyrecord_obj.score }}</span></h4>
+            {#    {{ request.user.stu_account }}#}
 
-                            <p class="text-muted">请压缩打包后上传</p>
-                        </div>
+            <hr>
+            <p>已上传文件列表:</p>
+            <table id="uploaded-list" class="table table-striped">
+                <thead>
+                <tr>
+                    <th>文件名</th>
+                    <th>大小(kb)</th>
+                    <th>上传时间</th>
+                    <th>操作</th>
+                </tr>
+                </thead>
+                <tbody>
+                {% for filename, fileinfo in response_dic.files.items %}
+                    <tr>
+                        <td><a>{{ filename }}</a></td>
+                        <td>{{ fileinfo.size }}</td>
+                        <td>{{ fileinfo.ctime }}</td>
+                        <td><a class='fa fa-times' aria-hidden='true'
+                               onclick="DeleteFileOnServer('{{ filename }}',this)"></a>删除
+                        </td>
+                    </tr>
+                {% endfor %}
+                </tbody>
+            </table>
+
+            <hr>
+            <p>请上传作业</p>
+
+            <form id="filedropzone" method="post" action="{{ request.path }}"
+                  class="dropzone dz-clickable">{% csrf_token %}
+                <div class="dz-default dz-message">
+                    <div class="dz-icon icon-wrap icon-circle icon-wrap-md">
+                        <i class="fa fa-cloud-upload fa-3x"></i>
                     </div>
-                </form>
+                    <div>
+                        <p class="dz-text">把作业拖到这里</p>
+                        <p class="text-muted">请压缩打包后上传</p>
+                    </div>
+                </div>
+            </form>
         </div>
     </div>
-</div>
+
 {% endblock %}
 
 {% block bottom-js %}
     <script>
-            function RegisterFormCheck() {
-            if (myDropzone.files.length < 2) {
-                alert("必须至少上传2张图片");
-                return false
-            }
-
-            if ($("form :checkbox").prop("checked")) {
-                $("form").find("[disabled]").removeAttr("disabled");
-                return true
-            } else {
-                alert("必须同意条款才能提交");
-                return false
-            }
-        }
-
         $(document).ready(function () {
             Dropzone.autoDiscover = false;
             Dropzone.options.filedropzone = {
@@ -86,9 +111,12 @@
                 window.location.reload()
             } else {
                 window.alert("上传成功！");
+                window.location.reload()
 
             }
 
         })
+
+
     </script>
 {% endblock %}

@@ -24,11 +24,13 @@ def homework_detail(request,studyrecord_id):
     homework_path = "{base_dir}/{class_id}/{course_record_id}/{studyrecord_id}/".format(base_dir=settings.HOMEWORK,
                                                                                             class_id=studyrecord_obj.student.enrolled_class.id,
                                                                                             course_record_id=studyrecord_obj.course_record_id,
-                                                                                            studyrecord_id=studyrecord_obj.id)
+                                                                                           studyrecord_id=studyrecord_obj.id)
+
+    if not os.path.isdir(homework_path):
+            os.makedirs(homework_path,exist_ok=True)
     if request.method =="POST":
         print(homework_path)
-        if not os.path.isdir(homework_path):
-            os.makedirs(homework_path,exist_ok=True)
+
         if len(os.listdir(homework_path)) <1:
                 #传文件
                 for k,file_obj in request.FILES.items():
