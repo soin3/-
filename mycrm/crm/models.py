@@ -259,6 +259,7 @@ class UserProfile(AbstractBaseUser,PermissionsMixin):
     roles = models.ManyToManyField("Role",blank=True)
     objects = UserProfileManager()
     stu_account = models.ForeignKey("Customer",verbose_name="学员账号",blank=True,null=True,help_text="只有学员报名后才能创建",on_delete=models.CASCADE)
+    avatar = models.ImageField(verbose_name='头像',default="avatar_imgs/img.jpg")
 
     USERNAME_FIELD = 'email'
     REQUIRED_FIELDS = ['name']

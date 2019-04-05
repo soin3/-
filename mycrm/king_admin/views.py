@@ -58,7 +58,6 @@ def table_objs_change(request,app_name,table_name,obj_id):
     model_form_class = create_model_form(request,admin_class)
     obj = admin_class.model.objects.get(id=obj_id)
     if request.method =="POST":
-        print(request.POST)
         form_obj = model_form_class(request.POST,instance=obj)#加了instance是修改，不加是添加
         if form_obj.is_valid():
             form_obj.save()

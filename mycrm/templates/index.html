@@ -37,6 +37,7 @@
                     {% for role in request.user.roles.all %}
                         {% for menu in role.menus.all %}
                             <li class=""><a href="
+
                                     {% if menu.url_type == 0 %}{% url menu.url_name %}{% else %}{{ menu.url_name }}{% endif %}">{{ menu.name }}</a>
                             </li>
                         {% endfor %}
@@ -45,7 +46,7 @@
             </div>
             <div class="col-sm-9 col-sm-offset-3 col-md-10 col-md-offset-2 main">
                 {% block page-content %}
-                   dasfasdfasdfasdfa
+
                     </div>
                     </div></div>
                 {% endblock %}

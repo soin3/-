@@ -13,11 +13,10 @@
                     <!-- menu profile quick info -->
                     <div class="profile clearfix">
                         <div class="profile_pic">
-                            <img src="/enroll_data/img.jpg" class="img-circle profile_img">
+                            <img src="/static/avatar_imgs/img.jpg" alt="" class="img-circle profile_img">
                         </div>
                         <div class="profile_info">
                             <span>Welcome,</span>
-
                             <h2>{{ request.user.name }}</h2>
                         </div>
                     </div>
@@ -31,7 +30,6 @@
                                 {% for role in request.user.roles.all %}
                                     {% for menu in role.menus.all %}
                                         <li class=""><a href="
-
                                                 {% if menu.url_type == 0 %}{% url menu.url_name %}{% else %}{{ menu.url_name }}{% endif %}">{{ menu.name }}</a>
                                         </li>
                                     {% endfor %}
@@ -53,7 +51,7 @@
                             <li class="">
                                 <a href="javascript:;" class="user-profile dropdown-toggle" data-toggle="dropdown"
                                    aria-expanded="false">
-                                    <img src="/enroll_data/img.jpg" alt="">{{ request.user.name }}
+                                    <img src="/static/avatar_imgs/img.jpg" alt="">{{ request.user.name }}
                                     <span class=" fa fa-angle-down"></span>
                                 </a>
                                 <ul class="dropdown-menu dropdown-usermenu pull-right">
@@ -74,7 +72,15 @@
             </div>
             <!-- page content -->
             <div class="right_col" role="main">
-                asdfasdfsf
+                {% block page-content %}
+                    <div class="jumbotron">
+                        <h1>Hello, world!</h1>
+
+                        <p>呀呀呀呀呀</p>
+
+                        <p><a class="btn btn-primary btn-lg" href="#" role="button">Learn more</a></p>
+                    </div>
+                {% endblock %}
             </div>
             <!-- /page content -->
             <!-- footer content -->

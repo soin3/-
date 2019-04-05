@@ -1,6 +1,6 @@
-{% extends 'king_admin/table_index.html' %}
+{% extends 'newindex.html' %}
 {% load tags %}
-{% block container %}
+{% block page-content %}
 <div class="alert alert-warning" role="alert">确认删除吗？</div>
     {% display_obj_related objs %}
     <span style="color: red">{{ error }}</span>

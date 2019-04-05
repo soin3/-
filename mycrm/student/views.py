@@ -11,6 +11,7 @@ def studyrecords(request,enroll_obj_id):
     return render(request,'student/studyrecords.html',{"enroll_obj":enroll_obj})
 
 def get_uploaded_fileinfo(file_dic,upload_dir):
+    #展示上传列表
     for filename in os.listdir(upload_dir):
         abs_file = '%s/%s' % (upload_dir, filename)
         file_create_time = time.strftime("%Y-%m-%d %H:%M:%S",
@@ -20,17 +21,16 @@ def get_uploaded_fileinfo(file_dic,upload_dir):
 
 def homework_detail(request,studyrecord_id):
     studyrecord_obj = models.StudyRecord.objects.get(id=studyrecord_id)
-    response_dic = {'files':{}}
     homework_path = "{base_dir}/{class_id}/{course_record_id}/{studyrecord_id}/".format(base_dir=settings.HOMEWORK,
                                                                                             class_id=studyrecord_obj.student.enrolled_class.id,
                                                                                             course_record_id=studyrecord_obj.course_record_id,
                                                                                            studyrecord_id=studyrecord_obj.id)
 
+    response_dic = {'files':{}}
+
     if not os.path.isdir(homework_path):
             os.makedirs(homework_path,exist_ok=True)
     if request.method =="POST":
-        print(homework_path)
-
         if len(os.listdir(homework_path)) <1:
                 #传文件
                 for k,file_obj in request.FILES.items():
@@ -46,6 +46,23 @@ def homework_detail(request,studyrecord_id):
                 return HttpResponse(json.dumps({"status":False,"err_msg":"最多只能传1个文件"}))
 
     get_uploaded_fileinfo(response_dic, homework_path)
-    print(response_dic)
+    #print(response_dic)
     return render(request,'student/homework_detail.html',{"studyrecord_obj":studyrecord_obj,"response_dic":response_dic})
+
+def delete_file(request):
+    #删除文件
+    ret = {}
+    if request.method == "POST":
+        studyrecord_id=request.POST.get("studyrecord_id")
+        filename = request.POST.get("filename")
+        studyrecord_obj = models.StudyRecord.objects.get(id=studyrecord_id)
+        homework_path = "{base_dir}/{class_id}/{course_record_id}/{studyrecord_id}/".format(base_dir=settings.HOMEWORK,
+                                                                                            class_id=studyrecord_obj.student.enrolled_class.id,
+                                                                                            course_record_id=studyrecord_obj.course_record_id,
+                                                                                            studyrecord_id=studyrecord_obj.id)
+
+        abs_file = '%s/%s' % (homework_path,filename)
+        os.remove(abs_file)
+        ret["status"]=True
+    return HttpResponse(json.dumps(ret))
 

@@ -1,4 +1,4 @@
-{% extends 'king_admin/table_index.html' %}
+{% extends 'newindex.html' %}
 {% load tags %}
 {% block extra-css-resources %}
     <style type="text/css">
@@ -10,7 +10,7 @@
     </style>
 {% endblock %}
 
-{% block container %}
+{% block page-content %}
     <form class="form-horizontal" method="post" onsubmit="return SelectAll()">
         {% csrf_token %}
         <span style="color: red">{{ form_obj.errors }}</span>

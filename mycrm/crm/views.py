@@ -8,7 +8,7 @@ import random,string
 
 # Create your views here.
 def index(request):
-    return render(request,'index.html')
+    return render(request,'newindex.html')
 
 
 def customers_list(request):
@@ -109,7 +109,7 @@ def enrollment_rejection(request,enrollment_id):
     enroll_obj.contract_agreed = False
     enroll_obj.save()
     enroll_data_dir = "%s/%s/id_img"%(settings.ENROLL_DATA,enrollment_id)#存放身份证图片路径
-    print(enroll_data_dir)
+    #print(enroll_data_dir)
     import shutil#清空目录下的内容
     shutil.rmtree(enroll_data_dir)
     return redirect("/crm/customer/%s/enrollment/"%enroll_obj.customer.id)

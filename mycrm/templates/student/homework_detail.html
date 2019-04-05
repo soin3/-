@@ -1,15 +1,15 @@
-{% extends 'index.html' %}
+{% extends 'newindex.html' %}
 {% load stu_tags %}
 
 {% block page-content %}
 
 
     <div>
-    <ul class="nav nav-tabs">
-                        <li role="presentation" ><a href="/student/">我的课程</a></li>
-                        <li role="presentation"><a href="/student/studyrecords/{{ studyrecord_obj.student.id }}">班级</a></li>
-                        <li role="presentation"class="active"><a href="#">作业详情</a></li>
-     </ul>
+        <ul class="nav nav-tabs">
+            <li role="presentation"><a href="/student/">我的课程</a></li>
+            <li role="presentation"><a href="/student/studyrecords/{{ studyrecord_obj.student.id }}">班级</a></li>
+            <li role="presentation" class="active"><a href="#">作业详情</a></li>
+        </ul>
     </div>
     <div class="panel panel-default">
         <!-- Default panel contents -->
@@ -47,8 +47,8 @@
                         <td><a>{{ filename }}</a></td>
                         <td>{{ fileinfo.size }}</td>
                         <td>{{ fileinfo.ctime }}</td>
-                        <td><a class='fa fa-times' aria-hidden='true'
-                               onclick="DeleteFileOnServer('{{ filename }}',this)"></a>删除
+                        <td><a href="javascript:void(0)"
+                               onclick="DeleteFileOnServer('{{ filename }}','{{ studyrecord_obj.id }}')">删除</a>
                         </td>
                     </tr>
                 {% endfor %}
@@ -77,8 +77,8 @@
 
 {% block bottom-js %}
     <script>
+    Dropzone.autoDiscover = false;
         $(document).ready(function () {
-            Dropzone.autoDiscover = false;
             Dropzone.options.filedropzone = {
                 url: "{{ request.path }}",
                 paramName: "file", // The name that will be used to transfer the file
@@ -117,6 +117,31 @@
 
         })
 
+        function DeleteFileOnServer(filename,studyrecord_id) {
+            if (window.confirm('你确定要删除吗？')) {
+                $.ajax({
+                    url: '/student/delete_file/',
+                    type: 'POST',
+                    data: {
+                        csrfmiddlewaretoken: '{{ csrf_token }}',
+                        "studyrecord_id": studyrecord_id,
+                        "filename":filename
+                    },
+                    success: function (data) {
+                        var data = JSON.parse(data);
+                        if (data.status) {
+                            window.location.reload()
+                        }
+                        else {
+                            window.alert("文件不存在")
+                        }
+                    }
+                })
+            }
+            else{
+                return false
+            }
 
+        }
     </script>
 {% endblock %}
