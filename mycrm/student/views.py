@@ -9,6 +9,7 @@ from crm.permissions import permission
 def stu_my_classes(request):
     return render(request,'student/stu_my_classes.html')
 
+@permission.check_permission
 def studyrecords(request,enroll_obj_id):
     enroll_obj = models.Enrollment.objects.get(id=enroll_obj_id)
     return render(request,'student/studyrecords.html',{"enroll_obj":enroll_obj})
@@ -21,7 +22,7 @@ def get_uploaded_fileinfo(file_dic,upload_dir):
                                          time.gmtime(os.path.getmtime(abs_file)))
         file_dic['files'][filename] = {'size': os.path.getsize(abs_file) / 1000,
                                            'ctime': file_create_time}
-
+@permission.check_permission
 def homework_detail(request,studyrecord_id):
     studyrecord_obj = models.StudyRecord.objects.get(id=studyrecord_id)
     homework_path = "{base_dir}/{class_id}/{course_record_id}/{studyrecord_id}/".format(base_dir=settings.HOMEWORK,

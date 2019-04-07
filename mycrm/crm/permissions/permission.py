@@ -17,13 +17,11 @@ def perm_check(*args,**kwargs):
             else:
                 #把绝对的url请求转成相对的urlname
                 resolve_url_obj = resolve(request.path)
-                print(v['url'])
                 if resolve_url_obj.url_name == v['url']:#相对的url别名匹配了
                     print('相对的url别名匹配了')
                     url_matched = True
 
             if url_matched:
-                print('url_matched')
                 if v['method'] == request.method:#请求方法匹配
                     arg_matched = True
                     for request_arg in v['args']:
@@ -32,8 +30,8 @@ def perm_check(*args,**kwargs):
                            arg_matched =False
 
                     if arg_matched:#走到这里，仅仅代表这个请求和这条权限的定义规则匹配了
-                        print(arg_matched)
-                        if request.user.has_perm(permission_name):
+                        print(request.user.get_all_permissions() )
+                        if  request.user.has_perm('lll'):
                             #有权限
                             print("有权限")
                             return True

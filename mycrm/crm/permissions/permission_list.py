@@ -14,7 +14,7 @@ permission_dic = {
     },
    'crm.can_access_studyrecords':{
         'url_type':0,
-        'url':'can_access_studyrecords',
+        'url':'studyrecords',
         'method':'GET',
         'args':[]
     },
