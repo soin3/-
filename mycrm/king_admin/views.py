@@ -14,6 +14,7 @@ def index(request):
     return render(request, "king_admin/table_index.html",{"table_list":king_admin.enabled_admins})
 
 @login_required
+@permission.check_permission
 def display_table_objs(request,app_name,table_name):
     admin_class = king_admin.enabled_admins[app_name][table_name]
     if request.method == "POST":#action
@@ -55,6 +56,7 @@ def display_table_objs(request,app_name,table_name):
                   },
                   )
 @login_required
+@permission.check_permission
 def table_objs_change(request,app_name,table_name,obj_id):
     admin_class = king_admin.enabled_admins[app_name][table_name]
     model_form_class = create_model_form(request,admin_class)

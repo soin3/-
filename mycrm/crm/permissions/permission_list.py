@@ -18,12 +18,6 @@ permission_dic = {
         'method':'GET',
         'args':[]
     },
-     'crm.can_access_customer_detail':{
-        'url_type':0,
-        'url':'table_obj_change',
-        'method':'GET',
-        'args':[]
-    },
        'crm.can_access_homework_detail':{
         'url_type':0,
         'url':'homework_detail',
@@ -33,6 +27,18 @@ permission_dic = {
            'crm.can_upload_homework':{
         'url_type':0,
         'url':'homework_detail',
+        'method':'POST',
+        'args':[]
+    },
+     'crm.can_access_customer_detail':{
+        'url_type':0,
+        'url':'table_objs',
+        'method':'GET',
+        'args':[]
+    },
+     'crm.can_change_customer_detail':{
+        'url_type':0,
+        'url':'table_objs_change',
         'method':'POST',
         'args':[]
     },
