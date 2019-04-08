@@ -30,9 +30,9 @@ def perm_check(*args,**kwargs):
                            arg_matched =False
 
                     if arg_matched:#走到这里，仅仅代表这个请求和这条权限的定义规则匹配了
-                        print(request.user.get_all_permissions() )
-                        if  request.user.has_perm('lll'):
-                            #有权限
+                        print('当前权限名',permission_name)
+                        print('当前用户拥有的权限',request.user.get_all_permissions())
+                        if request.user.has_perm(permission_name):
                             print("有权限")
                             return True
     else:

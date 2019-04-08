@@ -27,6 +27,7 @@
 
     <!-- Custom Theme Style -->
     <link href="/static/css/custom.css" rel="stylesheet">
+    <link href="/static/plugins/dropzone/dropzone.css" rel="stylesheet">
 </head>
 {% block body %}
 
@@ -62,6 +63,10 @@
 
 <!-- Custom Theme Scripts -->
 <script src="/static/js/custom.js" type="af47e75254d2a53e5358e5e3-text/javascript"></script>
+{#dropzone#}
+
+
+
 <!-- Google Analytics -->
 <script type="af47e75254d2a53e5358e5e3-text/javascript">
 (function(i,s,o,g,r,a,m){i['GoogleAnalyticsObject']=r;i[r]=i[r]||function(){
@@ -71,12 +76,14 @@ m=s.getElementsByTagName(o)[0];a.async=1;a.src=g;m.parentNode.insertBefore(a,m)
 
 ga('create', 'UA-23581568-13', 'auto');
 ga('send', 'pageview');
+
 </script>
 
 <script src="https://ajax.cloudflare.com/cdn-cgi/scripts/a2bd7673/cloudflare-static/rocket-loader.min.js"
         data-cf-settings="af47e75254d2a53e5358e5e3-|49" defer=""></script>
-</body>
 
+<script src="/static/plugins/dropzone/dropzone.js"></script>
 {% block bottom-js %}
 {% endblock %}
+
 </html>

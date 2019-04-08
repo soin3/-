@@ -1,7 +1,7 @@
 __author__ = 'Administrator'
 permission_dic = {
     'crm.can_access_my_course':{
-         'url_type':0,#0相对，1绝对
+    'url_type':0,#0相对，1绝对
     'url':'stu_my_classes',
     'method':'GET',
     'args':[]

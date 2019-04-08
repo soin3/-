@@ -3,17 +3,20 @@ from crm import forms,models
 from django.db import IntegrityError
 import os,json
 from mycrm import  settings
+from django.contrib.auth.decorators import login_required
 import random,string
 # from django.core.cache import cache
 
 # Create your views here.
+@login_required
 def index(request):
     return render(request,'newindex.html')
 
-
+@login_required
 def customers_list(request):
     return render(request,"sales/customers.html")
 
+@login_required
 def enrollment(request,customer_id):
     errors = {}
     customer_obj = models.Customer.objects.get(id = customer_id)
@@ -27,7 +30,6 @@ def enrollment(request,customer_id):
                 enrollment_form.cleaned_data["customer"]=customer_obj
                 enrollment_obj = models.Enrollment.objects.create(**enrollment_form.cleaned_data)
                 msgs["msg"] = msg.format(enrollment_obj_id =enrollment_obj.id)
-
                 #设置报名链接的超时时间
                 # msgs["msg"] = msg.format(enrollment_obj_id =enrollment_obj.id)
                 #random_str = "".join(random.sample(string.ascii_lowercase+string.digits,8))
@@ -55,7 +57,7 @@ def enrollment(request,customer_id):
         enrollment_form = forms.EnrollmentForm()
     return render(request,"sales/enrollment.html",{"enrollment_form":enrollment_form,"errors":errors,
                                                    "customer_obj":customer_obj,"msgs":msgs})
-
+@login_required
 def stu_registration(request,enrollment_id):
     # if cache.get(enrollment_id) == random_str:
         enrollment_obj = models.Enrollment.objects.get(id = enrollment_id)
@@ -97,6 +99,7 @@ def stu_registration(request,enrollment_id):
     # else:
     #     return  HttpResponse("链接已失效")
 
+@login_required
 def contract_review(request,enrollment_id):
     enroll_obj = models.Enrollment.objects.get(id=enrollment_id)
     enroll_form = forms.EnrollmentForm(instance=enroll_obj)
@@ -104,6 +107,7 @@ def contract_review(request,enrollment_id):
     return render(request, 'sales/contract_review.html',{"enroll_obj":enroll_obj,
                                                 "customers_form":customers_form,"enroll_form":enroll_form})
 
+@login_required
 def enrollment_rejection(request,enrollment_id):
     enroll_obj = models.Enrollment.objects.get(id=enrollment_id)
     enroll_obj.contract_agreed = False
@@ -114,6 +118,7 @@ def enrollment_rejection(request,enrollment_id):
     shutil.rmtree(enroll_data_dir)
     return redirect("/crm/customer/%s/enrollment/"%enroll_obj.customer.id)
 
+@login_required
 def payment(request,enrollment_id):
     enroll_obj = models.Enrollment.objects.get(id=enrollment_id)
     errors = ''

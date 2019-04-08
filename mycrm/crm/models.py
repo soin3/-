@@ -267,10 +267,10 @@ class UserProfile(AbstractBaseUser,PermissionsMixin):
     def __str__(self):
         return self.email
 
-    def has_perm(self, perm, obj=None):
-        "Does the user have a specific permission?"
-        # Simplest possible answer: Yes, always
-        return True
+    # def has_perm(self, perm, obj=None):
+    #     "Does the user have a specific permission?"
+    #     # Simplest possible answer: Yes, always
+    #     return True
 
     def has_module_perms(self, app_label):
         "Does the user have permissions to view the app `app_label`?"
@@ -284,6 +284,8 @@ class UserProfile(AbstractBaseUser,PermissionsMixin):
         return self.is_admin
 
     class Meta:
+        verbose_name = "账号权限"
+        verbose_name_plural ="账号权限"
         permissions = (('can_access_my_course','可以访问我的课程'),
                        ('can_access_customer_list','可以访问客户列表'),
                        ('can_access_customer_detail','可以访问客户详细'),

@@ -62,7 +62,7 @@ class CustomerAdmin(BaseAdmin):
             link_name = "报名新课"
         else:
             link_name = "报名"
-        return '''<a href="/crm/customer/%s/enrollment/">%s</a>'''%(self.instance.id,link_name)
+        return '''<a style="color:red"href="/crm/customer/%s/enrollment/">%s</a>'''%(self.instance.id,link_name)
     enroll.display_name = "报名链接"
     # def clean_name(self):
     #     #对单个字段验证

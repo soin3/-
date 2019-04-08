@@ -25,8 +25,8 @@
             {% csrf_token %}
             <span style="color: red">{{ form_obj.errors }}</span>
             {% for field in form_obj %}
-                <div class="form-group">
-                    <label class="col-sm-2 control-label" style="font-weight: normal">
+                <div class="item  form-group">
+                    <label class="control-label col-md-3 col-sm-3 col-xs-12" style="font-weight: normal">
                         {% if field.field.required %}
                             <b>{{ field.label }}</b>
                         {% else %}
@@ -34,11 +34,11 @@
                         {% endif %}
                     </label>
 
-                    <div class="col-sm-5">
+                    <div class="col-sm-8">
                         {% if field.name in admin_class.filter_horizontal %}
-                            <div class="col-md-5">
+                            <div class="col-md-5 col-sm-9 col-xs-12 ">
                                 {% get_m2m_list admin_class field form_obj as m2m_obj_list %}
-                                <select id="id_{{ field.name }}_from" multiple class="filter_select_box">
+                                <select id="id_{{ field.name }}_from" multiple class="select2_multiple form-control">
                                     {% if field.name in admin_class.readonly_fields and not admin_class.is_add_form%}
                                         {% for obj in m2m_obj_list %}
                                             <option disabled value="{{ obj.id }}">
@@ -56,13 +56,12 @@
                                 </select>
                             </div>
                             <div class="col-md-1">
-                                <span class="glyphicon glyphicon-resize-horizontal" style="top: 140px;font-size:22px"
-                                      aria-hidden="true"></span>
+                                双击移动
                             </div>
                             <div class="col-md-5">
                                 {% selected_m2m_list form_obj field as selected_obj_list %}
                                 <select name="{{ field.name }}" tag="chose" id="id_{{ field.name }}_to" multiple
-                                        class="filter_select_box">
+                                        class="select2_multiple form-control">
                                     {% if field.name in admin_class.readonly_fields and not admin_class.is_add_form%}
                                         {% for obj in selected_obj_list %}
                                             <option disabled value="{{ obj.id }}">

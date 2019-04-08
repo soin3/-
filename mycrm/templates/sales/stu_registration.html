@@ -1,10 +1,10 @@
-{% extends "ddd.html" %}
+{% extends "newindex.html" %}
 {% load crm_tags %}
 
-{% block body %}
-    <div class="container col-lg-8 col-md-offset-2">
-        <div class="panel panel-success ">
-            <div class="panel-heading">
+{% block page-content %}
+    <div>
+        <div class="x_panel">
+            <div class="x_title">
                 <h3 class="panel-title">报名</h3>
             </div>
             <div class="panel-body">
@@ -67,7 +67,9 @@
             {% endif %}
         </div>
     </div>
+{% endblock %}
 
+{% block bottom-js %}
     <script>
         function RegisterFormCheck() {
             if (myDropzone.files.length < 2) {
@@ -94,7 +96,7 @@
                 maxFiles: 2,
                 uploadMultiple: true,
                 accept: function (file, done) {
-                    if (! file.name.endsWith(".zip")) {
+                    if (!file.name.endsWith(".zip")) {
                         alert("Naha, you don't.")
                         {#              done("Naha, you don't.");#}
                     }
@@ -118,10 +120,7 @@
                 window.location.reload()
             } else {
                 window.alert("上传成功！");
-
             }
-
         })
-
     </script>
 {% endblock %}

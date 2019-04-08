@@ -1,5 +1,6 @@
 from django.shortcuts import render,redirect
 from django.contrib.auth import login,authenticate,logout
+from django.contrib.auth.decorators import login_required
 def access_login(request):
     errors = {}
     if request.method == 'POST':
@@ -18,8 +19,8 @@ def access_logout(request):
     logout(request)
     return redirect("/account/login/")
 
+@login_required
 def index(request):
-    print(request.user.id,)
     return  render(request,"newindex.html")
 
 def newindex(request):

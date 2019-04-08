@@ -4,9 +4,11 @@ from king_admin.utils import table_filter,table_sort,table_search
 from django.core.paginator import Paginator, EmptyPage, PageNotAnInteger
 from king_admin.forms import create_model_form
 from django.contrib.auth.decorators import login_required
+from crm.permissions import permission
 # Create your views here.
 
 @login_required
+
 def index(request):
     #print(king_admin.enabled_admins)
     return render(request, "king_admin/table_index.html",{"table_list":king_admin.enabled_admins})

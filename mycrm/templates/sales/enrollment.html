@@ -9,7 +9,8 @@
                 <label class="col-sm-2 control-label">客户</label>
 
                 <div class="col-sm-10">
-                    姓名:{{ customer_obj.name }} qq:{{ customer_obj.qq }}
+                    <input type="text" class="form-control" disabled="disabled" value="姓名:{{ customer_obj.name }} qq:{{ customer_obj.qq }}">
+
                 </div>
             </div>
             {% for field in enrollment_form %}
@@ -32,7 +33,7 @@
                     </ul>
                 </div>
             </div>
-            <input type="submit" class="btn btn-info pull-right" value="下一步">
+            <input type="submit" class="btn btn-success pull-right" value="下一步">
         </form>
 
 
