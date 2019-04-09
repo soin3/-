@@ -287,12 +287,13 @@ class UserProfile(AbstractBaseUser,PermissionsMixin):
         verbose_name = "账号权限"
         verbose_name_plural ="账号权限"
         permissions = (('can_access_my_course','可以访问我的课程'),
-                       ('can_access_customer_list','可以访问客户列表'),
-                       ('can_access_customer_detail','可以访问客户详细'),
-                       ('can_change_customer_detail','可以修改客户详细'),
                         ('can_upload_homework','可以交作业'),
                         ('can_access_homework_detail','可以访问作业详情'),
-                        ('can_access_studyrecords','可以访问学习记录'),)
+                        ('can_access_studyrecords','可以访问学习记录'),
+                        ('can_access_customer_list','可以访问客户列表'),
+                       ('can_access_customer_info','可以查看所有客户信息'),
+                       ('can_change_customer_change','可以修改客户详细'),
+                       ('can_access_customer_change','可以访问客户详细'))
 
 
 class Payment(models.Model):

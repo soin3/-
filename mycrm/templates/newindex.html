@@ -25,7 +25,7 @@
                     <!-- sidebar menu -->
                     <div id="sidebar-menu" class="main_menu_side hidden-print main_menu">
                         <div class="menu_section">
-                            <h3>General</h3>
+                            <h3>目录</h3>
                             <ul class="nav side-menu">
                                 {% for role in request.user.roles.all %}
                                     {% for menu in role.menus.all %}
@@ -74,11 +74,11 @@
             <div class="right_col" role="main">
                 {% block page-content %}
                     <div class="jumbotron">
-                        <h1>Hello, world!</h1>
+                        <h1>欢迎登陆！</h1>
 
-                        <p>呀呀呀呀呀</p>
+                        <p>想了解更多课程信息，请点击下方按钮</p>
 
-                        <p><a class="btn btn-primary btn-lg" href="#" role="button">Learn more</a></p>
+                        <p><a class="btn btn-primary btn-lg" href="#" role="button">报名信息</a></p>
                     </div>
                 {% endblock %}
             </div>

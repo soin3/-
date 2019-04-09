@@ -25,3 +25,7 @@ def index(request):
 
 def newindex(request):
     return render(request,"newindex.html")
+
+@login_required
+def error(request):
+    return render(request,"404.html")

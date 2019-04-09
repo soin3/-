@@ -10,6 +10,10 @@ from crm.permissions import permission
 def stu_my_classes(request):
     return render(request,'student/stu_my_classes.html')
 
+
+def stu_index(request):
+    return render(request,'newindex.html')
+
 @permission.check_permission
 def studyrecords(request,enroll_obj_id):
     enroll_obj = models.Enrollment.objects.get(id=enroll_obj_id)

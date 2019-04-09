@@ -30,16 +30,22 @@ permission_dic = {
         'method':'POST',
         'args':[]
     },
-     'crm.can_access_customer_detail':{
+     'crm.can_access_customer_info':{
         'url_type':0,
         'url':'table_objs',
         'method':'GET',
         'args':[]
     },
-     'crm.can_change_customer_detail':{
+     'crm.can_change_customer_change':{
         'url_type':0,
         'url':'table_objs_change',
         'method':'POST',
+        'args':[]
+    },
+         'crm.can_access_customer_change':{
+        'url_type':0,
+        'url':'table_objs_change',
+        'method':'GET',
         'args':[]
     },
 }
