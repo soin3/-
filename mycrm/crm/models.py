@@ -284,8 +284,8 @@ class UserProfile(AbstractBaseUser,PermissionsMixin):
         return self.is_admin
 
     class Meta:
-        verbose_name = "账号权限"
-        verbose_name_plural ="账号权限"
+        verbose_name = "UserProfile账号管理"
+        verbose_name_plural ="UserProfile账号管理"
         permissions = (('can_access_my_course','可以访问我的课程'),
                         ('can_upload_homework','可以交作业'),
                         ('can_access_homework_detail','可以访问作业详情'),

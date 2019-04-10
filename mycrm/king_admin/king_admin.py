@@ -111,7 +111,9 @@ class StudyRecordAdmin(BaseAdmin):
     list_filters = ['course_record','score','record']
     #list_editable = ['score','record']行内编辑功能，如何做?
 
-
+class ClassListAdmin(BaseAdmin):
+    list_display = ('branch','course','class_type','semester','start_date','end_date','contract')
+    list_filters = ['branch','course']
 #注册admin方法
 def register(model_class,admin_class=None):
     # 仿admin注册功能，如果传入的model_class不在enabled_admins字典里，就获取model_class的app名字(model_class._meta.app_label)
@@ -129,3 +131,4 @@ register(models.UserProfile,UserProfileAdmin)
 register(models.StudyRecord,StudyRecordAdmin)
 register(models.CourseRecord,CourseRecordAdmin)
 
+register(models.ClassList,ClassListAdmin)
