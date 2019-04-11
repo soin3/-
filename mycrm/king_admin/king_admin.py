@@ -86,7 +86,7 @@ class CourseRecordAdmin(BaseAdmin):
     list_filters = ["from_class","day_num"]
     def initialize_studyrecords(self,request,queryset):
         if len(queryset)>1:
-            return HttpResponse("nonono")
+            return HttpResponse("不支持多个批量执行")
         #print(queryset[0].from_class.enrollment_set.all())#反查出所有报名此班级课程的学员
         new_obj_list = []
         for enroll_obj in queryset[0].from_class.enrollment_set.all():
@@ -112,7 +112,7 @@ class StudyRecordAdmin(BaseAdmin):
     #list_editable = ['score','record']行内编辑功能，如何做?
 
 class ClassListAdmin(BaseAdmin):
-    list_display = ('branch','course','class_type','semester','start_date','end_date','contract')
+    list_display = ('class_name','branch','course','class_type','semester','start_date','end_date','contract')
     list_filters = ['branch','course']
 #注册admin方法
 def register(model_class,admin_class=None):

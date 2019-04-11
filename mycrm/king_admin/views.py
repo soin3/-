@@ -77,6 +77,7 @@ def table_objs_add(request,app_name,table_name):
     admin_class.is_add_form = True
     model_form_class = create_model_form(request,admin_class)
     if request.method =="POST":
+
         form_obj = model_form_class(request.POST)#加了instance是修改，不加是添加
         if form_obj.is_valid():
             form_obj.save()

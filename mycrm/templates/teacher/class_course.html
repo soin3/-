@@ -1,0 +1,62 @@
+{% extends 'newindex.html' %}
+{% load stu_tags %}
+
+{# <div>#}
+{#        <ul class="nav nav-tabs">#}
+{#            <li role="presentation" class="active"><a href="/student/">我的课程</a></li>#}
+{#            <li role="presentation"><a href="#">班级</a></li>#}
+{#            <li role="presentation"><a href="#">作业详情</a></li>#}
+{#        </ul>#}
+{#    </div>#}
+
+{% block page-content %}
+
+    <div class="panel">
+        <div class="panel-heading">
+            <h3 class="panel-title">课程信息</h3>
+        </div>
+
+        <!-- Striped Table -->
+        <!--===================================================-->
+        <div class="panel-body">
+            <div class="table-responsive">
+                <table class="table table-striped table-hover">
+                    <thead>
+                    <tr>
+                        <th>课程节次</th>
+                        <th>签到状态</th>
+                        <th>本节作业</th>
+                        <th>上课日期</th>
+                        <th>作业标题</th>
+                    </tr>
+                    </thead>
+                    <tbody>
+                    {% for courserecord in courserecordlist %}
+                        <tr>
+                            <td>
+                                第{{ courserecord.day_num }}节
+                            </td>
+                            <td><a style="color: #1ABB9C" href="/king_admin/crm/studyrecord/?course_record={{ courserecord.id }} ">点名/成绩</a></td>
+                            <td>
+                                {% if courserecord.has_homework %}
+                                    有
+                                    {% else  %}
+                                    无
+                                {% endif %}
+                            </td>
+                        <td>{{ courserecord.date }}</td>
+                        <td>{{ courserecord.homework_title }}</td>
+{#                        <td><pre style="width: 240px;height: 60px">{{ courserecord.outline }} </pre></td>#}
+                        <td><a style="color: #1ABB9C" href="{% url 'teacher_lesson_detail' class_obj.id courserecord.id %}">查看详细</a></td>
+                        </tr>
+                    {% endfor %}
+                    </tbody>
+                </table>
+            </div>
+        </div>
+        <!--===================================================-->
+        <!-- End Striped Table -->
+
+    </div>
+
+{% endblock %}

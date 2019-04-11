@@ -108,6 +108,7 @@ class Enrollment(models.Model):
 
 class ClassList(models.Model):
     '''存储班级信息,学生以班级为单位管理，这个表被学员表反向关联， 即每个学员报名时需要选择班级'''
+    class_name = models.CharField(verbose_name="班级名称",max_length=32,blank=True,null=False,unique=True)
     branch = models.ForeignKey("Branch",verbose_name="校区",on_delete=models.CASCADE)
     course = models.ForeignKey("Course",verbose_name="课程",on_delete=models.CASCADE)
     class_type_choices = ((0,'面授(脱产)'),(1,'面授(周末)'),(2,'随到随学网络'))
@@ -119,7 +120,7 @@ class ClassList(models.Model):
     contract = models.ForeignKey("Contract",blank=True,null=True,on_delete=models.CASCADE)
 
     def __str__(self):
-        return "%s %s %s"%(self.branch,self.course,self.semester)
+        return "%s-%s-%s"%(self.branch,self.course,self.class_name)
 
     class Meta:
         verbose_name = "ClassList班级表"
@@ -265,7 +266,7 @@ class UserProfile(AbstractBaseUser,PermissionsMixin):
     REQUIRED_FIELDS = ['name']
 
     def __str__(self):
-        return self.email
+        return "%s %s" %(self.name,self.email)
 
     # def has_perm(self, perm, obj=None):
     #     "Does the user have a specific permission?"
