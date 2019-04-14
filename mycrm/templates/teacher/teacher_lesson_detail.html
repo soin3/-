@@ -50,7 +50,7 @@
                             <td>{{ studyrecrd.student.customer.name }}</td>
                             <td>{{ studyrecrd.get_record_display }}</td>
                             <td>
-                                <a style="color: #204d74" href="#">下载</a>
+                                <a style="color: #204d74" href="{% url 'download_homework' class_ojb.id studyrecrd.course_record.id studyrecrd.id %}">下载</a>
                             <td>
                                 {% if studyrecrd.course_record.has_homework %}
                                     {% if studyrecrd.score == 0 %}
