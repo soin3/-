@@ -43,8 +43,8 @@ class Customer(models.Model):
         return "QQ:%s,Name:%s" %(self.qq,self.name)
 
     class Meta:
-        verbose_name = "Customer客户信息表"
-        verbose_name_plural = "Customer客户信息表"
+        verbose_name = "客户信息"
+        verbose_name_plural = "客户信息"
         ordering = ['id']
 
 class Tag(models.Model):

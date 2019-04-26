@@ -10,7 +10,7 @@ from django.contrib.auth.decorators import login_required
 
 @login_required
 def teacher_index(request):
-
+    print(request.getHeader("user-agent"))
     return render(request,'newindex.html')
 
 @login_required

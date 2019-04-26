@@ -10,6 +10,7 @@ import random,string
 # Create your views here.
 @login_required
 def index(request):
+    print(request.META.get('HTTP_USER_AGENT'))
     return render(request,'newindex.html')
 
 @login_required
